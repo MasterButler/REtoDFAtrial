@@ -3,6 +3,8 @@ package state;
 import java.util.ArrayList;
 
 public class StateList extends ArrayList<State>{
+	private static final long serialVersionUID = 1L;
+
 	public boolean isExisting(String name) {
 		for (State currState: this){
 			if(currState.name == name) {

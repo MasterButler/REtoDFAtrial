@@ -1,21 +1,30 @@
 package state;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class State {
 	public String name;
-	public Map<String, State> connectedStates;
+	public Map<String, StateList> connectedStates;
 	
 	public State(String name) {
 		this.name = name;
-		this.connectedStates = new HashMap<String, State>();
+		this.connectedStates = new HashMap<String, StateList>();
 	}
 	
 	public void setTransition(String transitionInput, State transitionState){
-		connectedStates.put(transitionInput, transitionState);
+		StateList transitionOutput;
+		if(connectedStates.get(transitionInput) == null) {
+			transitionOutput = new StateList();
+		}else {
+			transitionOutput = getTransition(transitionInput);
+		}
+		transitionOutput.add(transitionState);
+		connectedStates.put(transitionInput, transitionOutput);
 	}
 	
-	public State getTransition(String transitionInput) {
+	public StateList getTransition(String transitionInput) {
 		return connectedStates.get(transitionInput);
 	}
 }
