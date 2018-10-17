@@ -24,4 +24,24 @@ public class StateList extends ArrayList<State>{
 		}
 		return false;
 	}
+	
+	public int getStartingStateIndex() {
+		StateList startState = new StateList();
+		for(State currState: this) {
+			if(currState.name.startsWith("s")){
+				startState.add(currState);
+			}
+		}
+		return indexOf(startState.get(0));
+	}
+	
+	public int getEndingStateIndex() {
+		StateList endState = new StateList();
+		for(State currState: this) {
+			if(currState.name.startsWith("e")){
+				endState.add(currState);
+			}
+		}
+		return indexOf(endState.get(endState.size()-1));
+	}
 }

@@ -9,14 +9,80 @@ public class StateConstructor {
 	public static char OR_OPERATOR = '|';
 	// a >= 0
 	public static char POSITIVE_CLOSURE = '+';
-	// ONE a OR NO a
+	// MAY or MAY NOT exist
 	public static char QUESTION_MARK = '?';
 	// FREE PASS
 	public static char EPSILON = '~';
 	
 	public static String STR_EPSILON = "~";
 	
-	public static void construct(String regexInput) {
+	public static void REtoDFA(String regexInput) {
+		
+		StateList stateList = construct(regexInput, "");
+		
+		// BREAK DOWN CASES WHERE THERE ARE CLUSTERS FORMED IN TRANSITION INPUTS
+		try {
+			boolean isAllChecked = false;
+			int i = 0;
+			while(!isAllChecked) {
+				System.out.println("==" + i + "==");
+				if(i == stateList.size()-1) {
+					isAllChecked = true;
+				}
+				String currState = stateList.get(i).name;
+				
+				System.out.println(currState);
+				Map<String, StateList> currMap = stateList.get(i).connectedStates;
+				System.out.println("KEYS AVAILABLE: ");
+				for(String key: currMap.keySet()) {
+					System.out.println(key);
+					if(key.length() > 1) {
+						String rootStateNumber = currState.substring(1) + ".";
+						
+						System.out.println("EDITING " + currState + "WITH INPUT " + key);
+						System.out.println("EDITED STATE NO: " + rootStateNumber);
+						System.out.println("EDITED KEY     : " + key.substring(1, key.length()-1));
+						
+						StateList newStates = construct(
+								key.substring(1, key.length()-1), 
+								rootStateNumber ); 
+						
+						System.out.println("REROUTING");
+						printStateTransitions(newStates);						
+						stateList.addAll(newStates);
+						System.out.println("END OF NEW STATE");
+
+						
+						// connect to start of new set
+						stateList.get(i).setTransition(STR_EPSILON, newStates.get(newStates.getStartingStateIndex()));
+						// connect to end of new set
+						newStates.get(newStates.getEndingStateIndex()).setTransition(STR_EPSILON, stateList.get(i).getTransition(key));
+						
+						// sever connection of previously connected complicated shit
+						stateList.get(i).removeTransitionWithInputOf(key);
+						
+						// restart the check
+						i = 0;
+						isAllChecked = false;
+						break;
+					}
+				}
+				
+				i++;
+				System.out.println();
+				System.out.println();
+			}
+		}catch(Exception e) {
+			System.out.println("ERROR OCCURED AT CLUSTER #2");
+			e.printStackTrace();
+		}
+		
+		// MINIMIZE THE STATES
+		
+		printStateTransitions(stateList);
+	}
+	
+	public static StateList construct(String regexInput, String rootState) {
 		StateList stateList = new StateList();
 		String regex = regexInput;
 		
@@ -45,7 +111,7 @@ public class StateConstructor {
 				}
 				// the POSITIVE CLOSURE case (e.g. a"+" )
 				else if(regex.charAt(0) == POSITIVE_CLOSURE) {
-					to.setTransition(transitionInput, from);
+					to.setTransition(STR_EPSILON , from);
 					regex = regex.substring(1);
 				}
 				// the POSITIVE CLOSURE case (e.g. a"?")
@@ -69,13 +135,16 @@ public class StateConstructor {
 						toCheck = toCheck.substring(1);
 						
 						while(inputStack.size() > 0) {
+							
 							if(toCheck.charAt(0) == '(') {
 								inputStack.add(toCheck.charAt(0));
 							}else if(toCheck.charAt(0) == ')') {
 								inputStack.removeLast();
 							}
+							
 							transitionInput += toCheck.charAt(0);
 							toCheck = toCheck.substring(1);
+							
 						}
 						System.out.println("REGEX: " + regex);
 						System.out.println("TRANS: " + transitionInput);
@@ -87,29 +156,21 @@ public class StateConstructor {
 					}
 					
 					if(!hasOR) {
-						if(epsilonStart != null && epsilonStart != null) {
+						epsilonStart = new State("s" + rootState + state);
+						if(epsilonStart != null && epsilonEnd != null) {
 							epsilonEnd.setTransition(STR_EPSILON, epsilonStart);
 						}
 						// System.out.println("CREATING EPSILON STATES");
-						epsilonStart = new State("s" + state);
 					}
 					
-					if(transitionInput.length() == 1) {						
-						from = new State("q" + state + "0");
-						to = new State("q" + state + "1");
-						from.setTransition(transitionInput, to);
-					}else {
-						/* TODO: THIS IS WRONG. UPDATE THIS SHIT
-						 */
-						from = new State("q" + state + "0");
-						to = new State("q" + state + "1");
-						from.setTransition(transitionInput, to);
-					}
+					from = new State("q" + rootState + state + "0");
+					to = new State("q" + rootState + state + "1");
+					from.setTransition(transitionInput, to);
 					
 					epsilonStart.setTransition(STR_EPSILON, from);
 					
 					if(!hasOR) {
-						epsilonEnd = new State("e" + state);
+						epsilonEnd = new State("e" + rootState + state);
 					}
 					
 					to.setTransition(STR_EPSILON, epsilonEnd);
@@ -129,20 +190,11 @@ public class StateConstructor {
 			System.out.println("ERROR OCCURED AT CLUSTER #1");
 			e.printStackTrace();
 		}
-		
-		
-		// BREAK DOWN CASES WHERE THERE ARE CLUSTERS FORMED IN TRANSITION INPUTS
-		try {
-			for(int i = 0; i < stateList.size(); i++) {
-				System.out.println("heh");
-			}
-		}catch(Exception e) {
-			System.out.println("ERROR OCCURED AT CLUSTER #2");
-			e.printStackTrace();
-		}
-		
-		// MINIMIZE THE STATES
-		
+
+		return stateList;
+	}
+	
+	public static void printStateTransitions(StateList stateList) {
 		// PRINT OUT THE STATE
 		System.out.println("TOTAL NUMBER OF STATES: " + stateList.size() + "\n");
 		for(int i = 0; i < stateList.size(); i++) {
@@ -151,7 +203,7 @@ public class StateConstructor {
 			System.out.println(currState);
 			Map<String, StateList> currMap = stateList.get(i).connectedStates;
 			for(String key: currMap.keySet()) {
-	
+			
 				StateList transitionOutput = currMap.get(key);
 				if(transitionOutput.size() == 0) {
 					System.out.println("DEAD END");

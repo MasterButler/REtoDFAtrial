@@ -24,7 +24,16 @@ public class State {
 		connectedStates.put(transitionInput, transitionOutput);
 	}
 	
+	public void setTransition(String transitionInput, StateList transitionStateList){
+		connectedStates.put(transitionInput, transitionStateList);
+	}
+	
+	
 	public StateList getTransition(String transitionInput) {
 		return connectedStates.get(transitionInput);
+	}
+	
+	public StateList removeTransitionWithInputOf(String transitionInput) {
+		return connectedStates.remove(transitionInput);
 	}
 }

@@ -8,9 +8,12 @@ public class Driver {
 //		StateConstructor.construct("ab");		
 //		System.out.println("CASE: A|B");
 //		StateConstructor.construct("a|b");
-		System.out.println("CASE: A|B");
+		System.out.println("CASE: a+c");
 //		StateConstructor.construct("(ab)|c");
-		StateConstructor.construct("a?|b");
+		StateConstructor.REtoDFA("(ab|(cd)?)?");
+//		 a|(bc(xd)?)
+		System.out.println("DONE");
+//		String input = "(abc)";
 		
 //		StateList a = new StateList();
 //		State x = new State("A1");
