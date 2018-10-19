@@ -1,6 +1,8 @@
 package state;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class StateList extends ArrayList<State>{
 	private static final long serialVersionUID = 1L;
@@ -25,6 +27,17 @@ public class StateList extends ArrayList<State>{
 		return false;
 	}
 	
+	public boolean addAll(StateList stateList) {
+//		System.out.println("IN ADD ALL WITH STATE LIST COUTN OF " + stateList.size());
+		for(State currState: stateList) {
+//			System.out.println(currState.name);
+			if(!isExisting(currState)) {
+				super.add(currState);
+			}
+		}
+		return true;
+	}
+	
 	public int getStartingStateIndex() {
 		StateList startState = new StateList();
 		for(State currState: this) {
@@ -43,5 +56,26 @@ public class StateList extends ArrayList<State>{
 			}
 		}
 		return indexOf(endState.get(endState.size()-1));
+	}
+	
+	public ArrayList<Integer> getAcceptingStateIndex() {
+		ArrayList<Integer> acceptingStateIndices = new ArrayList<Integer>();
+		
+		for (State currState: this){
+			if(currState.isAccepting == true) {
+				acceptingStateIndices.add(indexOf(currState));
+			}
+		}
+		return acceptingStateIndices;
+	}
+	
+	public ArrayList<String> getAllKeySets(){
+		Set<String> keySets = new HashSet<String>();
+		for(State currState: this) {
+			keySets.addAll(currState.connectedStates.keySet());
+		}
+		ArrayList<String> toReturn = new ArrayList<String>();
+		toReturn.addAll(keySets);
+		return toReturn;
 	}
 }

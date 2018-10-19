@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 import state.StateConstructor;
 
 public class Driver {
@@ -8,10 +10,12 @@ public class Driver {
 //		StateConstructor.construct("ab");		
 //		System.out.println("CASE: A|B");
 //		StateConstructor.construct("a|b");
-		System.out.println("CASE: a+c");
-//		StateConstructor.construct("(ab)|c");
-		StateConstructor.REtoDFA("(ab|(cd)?)?");
-//		 a|(bc(xd)?)
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.print("Enter case: " );
+		String regexInput = sc.nextLine();
+		
+		StateConstructor.REtoDFA(regexInput);
 		System.out.println("DONE");
 //		String input = "(abc)";
 		
