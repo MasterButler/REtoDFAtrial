@@ -1,63 +1,47 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import state.StateConstructor;
 
 public class Driver {
-
-	public static void main(String[] args) {
-		
-//		System.out.println("CASE: AB");
-//		StateConstructor.construct("ab");		
-//		System.out.println("CASE: A|B");
-//		StateConstructor.construct("a|b");
+	
+	public static String forCheckingNumI() {
 		Scanner sc = new Scanner(System.in);
 		
+		return sc.nextLine();
+	}
+	
+	public static String forCheckingNum0() {
+		return "a*";
+	}
+	
+	public static String forCheckingNum1() {
+		return "(a|b)*abb";
+	}
+	
+	public static void main(String[] args) {
+		
 		System.out.print("Enter case: " );
-		String regexInput = sc.nextLine();
+		String regexInput = forCheckingNum0();
 		
 		StateConstructor.REtoDFA(regexInput);
 		System.out.println("DONE");
-//		String input = "(abc)";
 		
-//		StateList a = new StateList();
-//		State x = new State("A1");
-//		State y = new State("B1");
-//		State z = new State("A1");
-//		a.add(x);
-//		a.add(y);
-//		a.add(z);
-//		for(int i = 0; i < a.size(); i++) {
-//			
-//		}
-		
-//		System.out.println("TRIAL");
+//		ArrayList<Integer> a = new ArrayList<>();
+//		ArrayList<Integer> b = new ArrayList<>();
+//		a.add(5);
+//		a.add(2);
+//		a.add(3);
 //		
-//		String regex = "(a(b))c(d)e";
-//		String transitionInput = "";
-//		if(regex.charAt(0) == '(') {
-//			LinkedList<Character> inputStack = new LinkedList<Character>();
-//			
-//			System.out.println("TRYING here");
-//			String toCheck = regex;
-//			
-//			transitionInput += toCheck.charAt(0);
-//			
-//			inputStack.add(toCheck.charAt(0));
-//			toCheck = toCheck.substring(1);
-//			
-//			while(inputStack.size() > 0) {
-//				if(toCheck.charAt(0) == '(') {
-//					inputStack.add(toCheck.charAt(0));
-//				}else if(toCheck.charAt(0) == ')') {
-//					inputStack.removeLast();
-//				}
-//				transitionInput += toCheck.charAt(0);
-//				toCheck = toCheck.substring(1);
-//			}
+//		b.add(5);
+//		b.add(3);
+//		b.add(2);
+//		
+//		if(a.containsAll(b) && b.containsAll(a)) {
+//			System.out.println("SAME");
+//		}else {
+//			System.out.println("DIFFERENT");
 //		}
-//		System.out.println(regex);
-//		System.out.println(transitionInput);
-		
 	}
-
 }

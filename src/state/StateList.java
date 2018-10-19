@@ -9,7 +9,7 @@ public class StateList extends ArrayList<State>{
 
 	public boolean isExisting(String name) {
 		for (State currState: this){
-			if(currState.name == name) {
+			if(currState.name.equals(name)) {
 				return true;
 			}
 		}
@@ -46,6 +46,17 @@ public class StateList extends ArrayList<State>{
 			}
 		}
 		return indexOf(startState.get(0));
+	}
+	
+	public ArrayList<Integer> getStartingStateIndices() {
+		ArrayList<Integer> startingStateIndices = new ArrayList<Integer>();
+		
+		for (State currState: this){
+			if(currState.name.contains("s0")) {
+				startingStateIndices.add(indexOf(currState));
+			}
+		}
+		return startingStateIndices;
 	}
 	
 	public int getEndingStateIndex() {

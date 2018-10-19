@@ -1,20 +1,29 @@
 package state;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class State {
+public class State implements Comparable<State>{
 	public String name;
 	public Map<String, StateList> connectedStates;
 	public boolean isAccepting;
 	public StateList epsilonClosures;
 	
-	public State(String name) {
-		this.name = name;
+	protected State() {
 		this.connectedStates = new HashMap<String, StateList>();
+	}
+	
+	public State(String name) {
+		this();
+		this.name = name;
 		this.isAccepting = false;
 	}
+	
+    public int compareTo(State other) {
+        return this.name.compareTo(other.name);
+    }
 	
 	public void setTransition(String transitionInput, State transitionState){
 		StateList transitionOutput;
@@ -64,6 +73,8 @@ public class State {
 		}
 
 		this.epsilonClosures = eClosures;
+		Collections.sort(this.epsilonClosures);
+		
 		return this.epsilonClosures;
 	}
 }

@@ -29,7 +29,9 @@ public class StateConstructor {
 		System.out.println("EPSILON NFA STATE TRANSITION");
 		printStateTransitions(stateList);
 		
+		
 		// Generate E-Closures of Each for easy indexing later on.
+		StateList groupedList = new StateList();
 		for(int i = 0; i < stateList.size(); i++) {
 			StateList eClosure = stateList.get(i).generateEClosures();
 			System.out.print("E(" + stateList.get(i).name + ")\t= ");
@@ -37,9 +39,27 @@ public class StateConstructor {
 				System.out.print(eClosure.get(j).name + " ");
 			}
 			System.out.println();
-			System.out.println("ALL KEYSETS FOR THE ECLOSURE: " + eClosure.getAllKeySets());
+			StateGroup toDO = new StateGroup(eClosure);
+			groupedList.add(toDO);
+			System.out.println();
 		}
 		
+		System.out.println("THIS IS MY NEW GROUPEDLIST");
+		printStateTransitions(groupedList);
+		
+		System.out.print("STARTING STATE: \t");
+		ArrayList<Integer> starting = groupedList.getStartingStateIndices();
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(groupedList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE: \t");
+		ArrayList<Integer> accepting = groupedList.getAcceptingStateIndex();
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(groupedList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
 		
 		// Minimize the number of states
 		

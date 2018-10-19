@@ -6,3 +6,5 @@ target/classes/state/State\.class
 target/classes/state/StateConstructor\.class
 
 target/classes/state/StateList\.class
+
+*.class
