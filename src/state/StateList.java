@@ -1,6 +1,7 @@
 package state;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +19,15 @@ public class StateList extends ArrayList<State>{
 	
 	public boolean isExisting(State state) {
 		return isExisting(state.name);
+	}
+	
+	public int getIfExisting(State state){
+		for(State currState: this) {
+			if(currState.name.equals(state.name)) {
+				return indexOf(currState);
+			}
+		}
+		return -1;
 	}
 	
 	public boolean add(State state) {
@@ -88,5 +98,19 @@ public class StateList extends ArrayList<State>{
 		ArrayList<String> toReturn = new ArrayList<String>();
 		toReturn.addAll(keySets);
 		return toReturn;
+	}
+	
+	public String predictConnection(String transitionInput){
+		StateList connections = new StateList();
+		for(State currState: this) {
+			currState.getTransition(transitionInput);
+			connections.addAll();
+		}
+		Collections.sort(connections);
+		String name = "";
+		for(int i = 0; i < connections.size(); i++) {
+			name += connections.get(i).name;
+		}
+		return name;
 	}
 }

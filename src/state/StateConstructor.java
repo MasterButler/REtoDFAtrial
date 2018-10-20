@@ -44,6 +44,16 @@ public class StateConstructor {
 			System.out.println();
 		}
 		
+		StateGroup toConnect = ((StateGroup) groupedList.get(0));
+		for(boolean isFinished = false; !isFinished;) {
+			ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
+			for(int i = 0; i < keySets.size(); i++) {
+				String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
+				System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+			}
+			break;
+		}
+		
 		System.out.println("THIS IS MY NEW GROUPEDLIST");
 		printStateTransitions(groupedList);
 		
