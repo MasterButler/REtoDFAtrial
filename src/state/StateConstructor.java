@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
+//((ab)|cd)ef|ghi
+//( (ab) | cd ) ef | ghi
+
 public class StateConstructor {
 	
 	// a OR b
@@ -30,12 +33,13 @@ public class StateConstructor {
 			stateList.add(forBlank);
 			printStateTransitions(stateList);
 		}else {
+			regexInput = addParenthesisPrecedences(regexInput);
 			stateList = REtoENFA(regexInput);
-			
-
-
-
 			stateList = ENFAtoDFA(stateList);			
+			for(int i = 0; i < stateList.size(); i++) {
+				stateList.get(i).name = "q" + i;
+			}
+			printStateTransitions(stateList);
 		}
 		
 		return stateList;
@@ -47,7 +51,7 @@ public class StateConstructor {
 		StateList groupedList = new StateList();
 		for(int i = 0; i < stateList.size(); i++) {
 			StateList eClosure = stateList.get(i).generateEClosures();
-			System.out.print("E(" + stateList.get(i).name + ")\t= ");
+//			System.out.print("E(" + stateList.get(i).name + ")\t= ");
 			for(int j = 0; j < eClosure.size(); j++) {
 				System.out.print(eClosure.get(j).name + " ");
 			}
@@ -70,12 +74,12 @@ public class StateConstructor {
 				for(int i = 0; i < keySets.size(); i++) {
 					if(!keySets.get(i).equals(STR_EPSILON)) {						
 						String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
-						System.out.println("SEARCHING FOR UNIT WITH NAME " + connectedStateName);
+//						System.out.println("SEARCHING FOR UNIT WITH NAME " + connectedStateName);
 						int connectedStateIndex = groupedList.getIndexIfExisting(connectedStateName);
 						StateGroup connectedState = null;
 						if(connectedStateIndex == -1) {
 //							groupedList.createNewState();
-							System.out.println("heh");
+//							System.out.println("heh");
 							StateGroup newConnection = toConnect.usedStates.createNewConnection(keySets.get(i));
 							groupedList.add(newConnection);
 							connectedState = newConnection;
@@ -125,16 +129,16 @@ public class StateConstructor {
 					if(key.length() > 1) {
 						String rootStateNumber = currState.substring(1) + ".";
 						
-						System.out.println("EDITING " + currState + "WITH INPUT " + key);
-						System.out.println("EDITED STATE NO: " + rootStateNumber);
-						System.out.println("EDITED KEY     : " + key.substring(1, key.length()-1));
+//						System.out.println("EDITING " + currState + "WITH INPUT " + key);
+//						System.out.println("EDITED STATE NO: " + rootStateNumber);
+//						System.out.println("EDITED KEY     : " + key.substring(1, key.length()-1));
 						
 						StateList newStates = construct( key.substring(1, key.length()-1), rootStateNumber ); 
 						
-						System.out.println("REROUTING");
+//						System.out.println("REROUTING");
 //						printStateTransitions(newStates);						
 						stateList.addAll(newStates);
-						System.out.println("END OF NEW STATE");
+//						System.out.println("END OF NEW STATE");
 
 						
 						// connect to start of new set
@@ -288,23 +292,6 @@ public class StateConstructor {
 	
 	public static void printStateTransitions(StateList stateList) {
 		// PRINT OUT THE STATE
-		System.out.println("TOTAL STATES    : " + stateList.size());
-		
-		System.out.print("STARTING STATE  : ");
-		ArrayList<Integer> starting = stateList.getStartingStateIndices();
-		for(int i = 0; i < starting.size(); i++) {
-			System.out.print(stateList.get(starting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.print("ACCEPTING STATE : ");
-		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
-		for(int i = 0; i < accepting.size(); i++) {
-			System.out.print(stateList.get(accepting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		
 		for(int i = 0; i < stateList.size(); i++) {
 			String currState = stateList.get(i).name;
 			
@@ -325,5 +312,159 @@ public class StateConstructor {
 			System.out.println();
 			
 		}
+		
+		
+		System.out.print("STARTING STATE  : ");
+		ArrayList<Integer> starting = stateList.getStartingStateIndices();
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(stateList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE : ");
+		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(stateList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.println("TOTAL STATES    : " + stateList.size());
+		
 	}
+	
+
+	public static String addParenthesisPrecedences(String input) {
+		input = addPadding(input, OR_OPERATOR);
+		return input;
+	}
+	
+	public static String addPadding(String input, char search) {
+		boolean done = false;
+		boolean found = false;
+
+		int i = 0;
+		int startingIndex = 0;
+		
+		while(!done) {
+			
+			if(i < input.length()) {					
+				char currChar = input.charAt(i);
+	//			System.out.println("checking " + currChar);
+				if(currChar == search) {					
+					startingIndex = i;
+					found = true;
+				}
+				i++;
+			}else {
+	//			System.out.println("CHECKED ALL");
+				done = true;
+				break;
+			}
+			
+			if(found) {
+		
+				System.out.println("FOUND AT INDEX " + startingIndex);
+				ArrayList<Character> balanceStack;
+				boolean closed;
+				int leftIndex;
+				int rightIndex;
+				
+				/****************************
+				 * LEFT SIDE ****************
+				 ****************************/
+				leftIndex = startingIndex;		
+				input = input.substring(0, leftIndex) + ")" + input.substring(leftIndex, input.length());
+//				System.out.println("OUTPUT IS NOW: " + input);
+				closed = false;
+				balanceStack = new ArrayList<Character>();
+				
+				leftIndex--; // since ')' is added
+				while(!closed) {
+//					System.out.println("LEFTINDEX IS NOW " + leftIndex);
+					if(leftIndex > -1) {
+						char currRead = input.charAt(leftIndex); 
+						if(currRead == '(') {
+							if(balanceStack.size() > 0) {
+								balanceStack.remove(0);
+							}else{
+								input = input.substring(0, leftIndex) + "(" + input.substring(leftIndex, input.length());
+								closed = true;
+							}
+						}else if(currRead ==')') {
+							balanceStack.add(')');
+						}else if(currRead == search) {
+							if(balanceStack.size() == 0) {
+								input = input.substring(0, leftIndex) + "(" + input.substring(leftIndex, input.length());
+								closed = true;
+							}
+						}
+						leftIndex--;					
+					}else {
+						input = "(" + input;
+						closed = true;
+					}
+				}
+				
+				startingIndex += 2;
+				
+				/****************************
+				 * RIGHT SIDE ***************
+				 ****************************/
+				rightIndex = startingIndex;		
+				rightIndex++;
+				input = input.substring(0, rightIndex) + "(" + input.substring(rightIndex, input.length());
+//				System.out.println("OUTPUT IS NOW: " + input);
+				closed = false;
+				balanceStack = new ArrayList<Character>();
+				
+				rightIndex++; // since '(' is added
+				while(!closed) {
+//					System.out.println("RIGHTINDEX IS NOW " + rightIndex);
+					if(rightIndex < input.length()) {
+						char currRead = input.charAt(rightIndex); 
+//						System.out.println("\t\t\t" + currRead);
+						if(currRead == ')') {
+							if(balanceStack.size() > 0) {
+								balanceStack.remove(0);
+							}else{
+								input = input.substring(0, rightIndex) + ")" + input.substring(rightIndex, input.length());
+								closed = true;
+							}
+						}else if(currRead =='(') {
+							balanceStack.add('(');
+						}else if(currRead == search) {
+							if(balanceStack.size() == 0) {
+								input = input.substring(0, rightIndex) + ")" + input.substring(rightIndex, input.length());
+								closed = true;
+							}
+						}
+						rightIndex++;					
+					}else {
+//						System.out.println("NEED TO DEFAULT NA");
+						input =  input + ")";
+						closed = true;
+					}
+				}
+				
+				i = startingIndex+1;
+				found = false;
+				
+				System.out.print("RESULT: ");
+				System.out.println(input);
+				System.out.print("LEFT  : ");
+				System.out.println(input.substring(0, i-1));
+				System.out.print("RIGHT : ");
+				System.out.println(input.substring(i, input.length()));
+				System.out.println();
+				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
+				
+			}
+		}
+		return input;
+	}
+	
 }
+
+//(0|1)*1(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)
+
+//(0|1)*1(0|1)

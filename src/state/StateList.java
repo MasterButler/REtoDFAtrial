@@ -144,7 +144,7 @@ public class StateList extends ArrayList<State>{
 		}
 		StateGroup newConnection = null;
 		if(!isExisting(name)) {
-			System.out.println("OO NGA NO LOL");
+//			System.out.println("OO NGA NO LOL");
 			newConnection = new StateGroup(connections);
 			return newConnection;
 		}

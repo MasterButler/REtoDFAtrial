@@ -22,25 +22,73 @@ public class Driver {
 	
 	public static void main(String[] args) {
 		
+		
 		String regexInput = forCheckingNumI();
-		
 		StateConstructor.REtoDFA(regexInput);
-		System.out.println("DONE"); 
 		
-//		ArrayList<Integer> a = new ArrayList<>();
-//		ArrayList<Integer> b = new ArrayList<>();
-//		a.add(5);
-//		a.add(2);
-//		a.add(3);
-//		
-//		b.add(5);
-//		b.add(3);
-//		b.add(2);
-//		
-//		if(a.containsAll(b) && b.containsAll(a)) {
-//			System.out.println("SAME");
-//		}else {
-//			System.out.println("DIFFERENT");
-//		}
+//		testPrecedence();
+	}
+	
+	public static void testPrecedence() {
+		System.out.println("==================================");
+		System.out.println("== CASE 1 ========================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("ab|cde"));
+		// must return (ab)|(cde)
+		
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE 2A =======================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("a(bc)|de"));
+		// must return (a(bc))|(de)
+
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE 2B =======================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("ab|(cd)e"));
+		// must return (ab)|((cd)e)
+
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE 3 ========================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("(ab)c|de"));
+		// must return ((ab)c)|(de)
+		
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE 4 ========================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("a(b|c)de"));
+		// must return a((b)|(c))de
+
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE 5 ========================");
+		System.out.println();
+		StateConstructor.addParenthesisPrecedences("ab|cd|ef");
+		// must return (ab)|(cd)|(ef)
+		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE FINAL A ==================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("a((bc)*d|e)(f|g)|hi"));
+		// must return (ab)|(cd)|(ef)
+		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("==================================");
+		System.out.println("== CASE FINAL B ==================");
+		System.out.println();
+		System.out.println(StateConstructor.addParenthesisPrecedences("a"));
+		// must return (ab)|(cd)|(ef)
+		
+		
 	}
 }
