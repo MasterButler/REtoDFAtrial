@@ -42,10 +42,18 @@ public class StateConstructor {
 			for(int i = 0; i < stateList.size(); i++) {
 				stateList.get(i).name = "q" + i;
 			}
+			System.out.println("==============================");
+			System.out.println("DFA TRANSITION ===============");
+			System.out.println("==============================");
+			printStateTransitions(stateList);
 			stateList = minimizeDFA(stateList);
 			for(int i = 0; i < stateList.size(); i++) {
 				stateList.get(i).name = "q" + i;
 			}
+			
+			System.out.println("==============================");
+			System.out.println("FINAL MINIMIZED DFATRANSITION");
+			System.out.println("==============================");
 			printStateTransitions(stateList);
 		}
 		
@@ -108,38 +116,43 @@ public class StateConstructor {
 						
 						boolean different = false;
 						String similarWith = toCompare.name;
-						for(String key: keySets) {
-							
+						if(toCheck.isAccepting == toCompare.isAccepting) {
+							for(String key: keySets) {
+								
 //							System.out.println("\t==========\n\tTRANSITION: " + key);
-							// hardcoded 0 since it's a dfa
-							String resultingStateName = toCheck.getTransition(key).size() != 0 ?  
-									toCheck.getTransition(key).get(0).name : "";
-									int resultingIndex = -1;
-									for(int k = 0; k < equivalence_0.size(); k++) {
-										if(equivalence_0.get(k).isExisting(resultingStateName)) {
-											resultingIndex = k;
-										}
-									}
-									
-									String comparingStateName = toCompare.getTransition(key).size() != 0 ? 
-											toCompare.getTransition(key).get(0).name : "";					
-											int comparingIndex = -1;
-											for(int k = 0; k < equivalence_0.size(); k++) {
-												if(equivalence_0.get(k).isExisting(comparingStateName)) {
-													comparingIndex = k;
-												}
+								// hardcoded 0 since it's a dfa
+								String resultingStateName = toCheck.getTransition(key).size() != 0 ?  
+										toCheck.getTransition(key).get(0).name : "";
+										int resultingIndex = -1;
+										for(int k = 0; k < equivalence_0.size(); k++) {
+											if(equivalence_0.get(k).isExisting(resultingStateName)) {
+												resultingIndex = k;
 											}
+										}
+										
+										String comparingStateName = toCompare.getTransition(key).size() != 0 ? 
+												toCompare.getTransition(key).get(0).name : "";					
+												int comparingIndex = -1;
+												for(int k = 0; k < equivalence_0.size(); k++) {
+													if(equivalence_0.get(k).isExisting(comparingStateName)) {
+														comparingIndex = k;
+													}
+												}
 //											System.out.println();
 //											System.out.println("\tRESULTING: " + resultingIndex);
 //											System.out.println("\tCOMPARING: " + comparingIndex);
 //											System.out.println();
-											if(resultingIndex != comparingIndex) {
-												different = true;
-												similarWith = "";
-												break;
-											}
-											
+												if(resultingIndex != comparingIndex) {
+													different = true;
+													similarWith = "";
+													break;
+												}
+												
+							}
+						}else {
+							different = true;
 						}
+						
 						if(different) {
 //						System.out.println("DIFFERENT");
 							if(j == equivalence_1.size()-1) {
@@ -570,6 +583,19 @@ public class StateConstructor {
 			
 		}
 		
+		System.out.print("STARTING STATE  : ");
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(stateList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE : ");
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(stateList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.println("TOTAL STATES    : " + stateList.size());
 		
 		
 	}

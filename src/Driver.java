@@ -20,8 +20,11 @@ public class Driver {
 		return "(a|b)*abb";
 	}
 	
+	public static String forCheckingNum2() {
+		return "(0|1)*1(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)";
+	}
+	
 	public static void main(String[] args) {
-		
 		
 		String regexInput = forCheckingNumI();
 		StateConstructor.REtoDFA(regexInput);
