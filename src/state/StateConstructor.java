@@ -69,11 +69,13 @@ public class StateConstructor {
 				finalList.add(toConnect);
 				ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
 				for(int i = 0; i < keySets.size(); i++) {
-					String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
-					StateGroup connectedState = (StateGroup)groupedList.get(groupedList.getIndexIfExisting(connectedStateName));
-					toTraverse.add(connectedState);
-					toConnect.setTransition(keySets.get(i), connectedState);
-//					System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+					if(!keySets.get(i).equals(STR_EPSILON)) {						
+						String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
+						StateGroup connectedState = (StateGroup)groupedList.get(groupedList.getIndexIfExisting(connectedStateName));
+						toTraverse.add(connectedState);
+						toConnect.setTransition(keySets.get(i), connectedState);
+//						System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+					}
 				}
 			}
 			toConnect.hasBeenTraversed = true;
