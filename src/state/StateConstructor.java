@@ -201,7 +201,7 @@ public class StateConstructor {
 				// the OR case (e.g. a | b)
 				if(regex.charAt(0) == OR_OPERATOR) {
 					// retain the epsilonStart and epsilonEnd of previous state
-					System.out.println("FOUND AN OR OPERATOR");
+//					System.out.println("FOUND AN OR OPERATOR");
 					hasOR = true;
 					regex = regex.substring(1);
 				}
@@ -228,7 +228,7 @@ public class StateConstructor {
 					if(regex.charAt(0) == '(') {
 						LinkedList<Character> inputStack = new LinkedList<Character>();
 						
-						System.out.println("TRYING here");
+//						System.out.println("TRYING here");
 						String toCheck = regex;
 						
 						transitionInput = toCheck.charAt(0) + "";
@@ -248,9 +248,9 @@ public class StateConstructor {
 							toCheck = toCheck.substring(1);
 							
 						}
-						System.out.println("REGEX: " + regex);
-						System.out.println("TRANS: " + transitionInput);
-						System.out.println("LEN OF TRANSITION OUTPUT:");
+//						System.out.println("REGEX: " + regex);
+//						System.out.println("TRANS: " + transitionInput);
+//						System.out.println("LEN OF TRANSITION OUTPUT:");
 						regex = regex.substring(transitionInput.length());
 					}else {
 						transitionInput = regex.charAt(0) + "";
@@ -355,8 +355,8 @@ public class StateConstructor {
 		while(!done) {
 			if(i < input.length()) {					
 				char currChar = input.charAt(i);
-				System.out.println("checking " + currChar);
-				System.out.println("REMAINING WITH CHECKING " + input.substring(i, input.length()));
+//				System.out.println("checking " + currChar);
+//				System.out.println("REMAINING WITH CHECKING " + input.substring(i, input.length()));
 				if(currChar == search) {					
 					startingIndex = i;
 					found = true;
@@ -370,7 +370,7 @@ public class StateConstructor {
 			
 			if(found) {
 		
-				System.out.println("FOUND AT INDEX " + startingIndex);
+//				System.out.println("FOUND AT INDEX " + startingIndex);
 				ArrayList<Character> balanceStack;
 				boolean closed;
 				int leftIndex;
@@ -418,9 +418,9 @@ public class StateConstructor {
 				 ****************************/
 				rightIndex = startingIndex;
 				rightIndex++;
-				System.out.println("CURR SYMBOL IS " + input.charAt(rightIndex));
-				System.out.println("CHECKING " + input.substring(0, rightIndex));
-				System.out.println("CHECKING " + input.substring(rightIndex, input.length()));
+//				System.out.println("CURR SYMBOL IS " + input.charAt(rightIndex));
+//				System.out.println("CHECKING " + input.substring(0, rightIndex));
+//				System.out.println("CHECKING " + input.substring(rightIndex, input.length()));
 
 				input = input.substring(0, rightIndex) + "(" + input.substring(rightIndex, input.length());
 //				System.out.println("OUTPUT IS NOW: " + input);
@@ -428,11 +428,11 @@ public class StateConstructor {
 				balanceStack = new ArrayList<Character>();
 				
 				rightIndex++; // since '(' is added
-				System.out.println();
-				System.out.println("AFTER ADDING");
-				System.out.println("CURR SYMBOL IS " + input.charAt(rightIndex));
-				System.out.println("CHECKING " + input.substring(0, rightIndex));
-				System.out.println("CHECKING " + input.substring(rightIndex, input.length()));
+//				System.out.println();
+//				System.out.println("AFTER ADDING");
+//				System.out.println("CURR SYMBOL IS " + input.charAt(rightIndex));
+//				System.out.println("CHECKING " + input.substring(0, rightIndex));
+//				System.out.println("CHECKING " + input.substring(rightIndex, input.length()));
 
 //				closed = false;
 				while(!closed) {
@@ -450,7 +450,7 @@ public class StateConstructor {
 						}else if(currRead =='(') {
 							balanceStack.add('(');
 						}else if(currRead == search){
-							System.out.println("FOUND THE | AT INDEX " + rightIndex);
+//							System.out.println("FOUND THE | AT INDEX " + rightIndex);
 							if(balanceStack.size() == 0) {
 								input = input.substring(0, rightIndex) + ")" + input.substring(rightIndex, input.length());
 								closed = true;
@@ -467,14 +467,14 @@ public class StateConstructor {
 				i = startingIndex+1;
 				found = false;
 				
-				System.out.print("RESULT: ");
-				System.out.println(input);
-				System.out.print("LEFT  : ");
-				System.out.println(input.substring(0, i-1));
-				System.out.print("RIGHT : ");
-				System.out.println(input.substring(i, input.length()));
-				System.out.println();
-				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
+//				System.out.print("RESULT: ");
+//				System.out.println(input);
+//				System.out.print("LEFT  : ");
+//				System.out.println(input.substring(0, i-1));
+//				System.out.print("RIGHT : ");
+//				System.out.println(input.substring(i, input.length()));
+//				System.out.println();
+//				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
 				
 			}
 		}
