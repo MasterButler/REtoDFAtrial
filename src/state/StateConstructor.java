@@ -71,21 +71,7 @@ public class StateConstructor {
 		System.out.println();
 		System.out.println("DFA STATE TRANSITION");
 		printStateTransitions(finalList);
-		
-		System.out.print("STARTING STATE: \t");
-		ArrayList<Integer> starting = finalList.getStartingStateIndices();
-		for(int i = 0; i < starting.size(); i++) {
-			System.out.print(finalList.get(starting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.print("ACCEPTING STATE: \t");
-		ArrayList<Integer> accepting = finalList.getAcceptingStateIndex();
-		for(int i = 0; i < accepting.size(); i++) {
-			System.out.print(finalList.get(accepting.get(i)).name + " ");
-		}
-		System.out.println();
-		
+
 		return finalList;
 	}
 	
@@ -93,17 +79,6 @@ public class StateConstructor {
 		System.out.println();
 		StateList stateList = construct(regexInput, "");
 		stateList.get(stateList.getEndingStateIndex()).setAccepting(true);
-		
-		System.out.print("STARTING STATE: \t");
-		System.out.println(stateList.get(stateList.getStartingStateIndex()).name);
-		
-		System.out.print("ACCEPTING STATE: \t");
-		ArrayList<Integer> toCheck = stateList.getAcceptingStateIndex();
-		for(int i = 0; i < toCheck.size(); i++) {
-			System.out.print(stateList.get(toCheck.get(i)).name + " ");
-		}
-		System.out.println();
-		System.out.println();
 		
 		// BREAK DOWN CASES WHERE THERE ARE CLUSTERS FORMED IN TRANSITION INPUTS
 		try {
@@ -280,24 +255,38 @@ public class StateConstructor {
 	
 	public static void printStateTransitions(StateList stateList) {
 		// PRINT OUT THE STATE
-		System.out.println("Total States: " + stateList.size() + "\n");
+		System.out.println("TOTAL STATES    : " + stateList.size());
+		
+		System.out.print("STARTING STATE  : ");
+		ArrayList<Integer> starting = stateList.getStartingStateIndices();
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(stateList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE : ");
+		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(stateList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		
 		for(int i = 0; i < stateList.size(); i++) {
 			String currState = stateList.get(i).name;
 			
 			System.out.println(currState);
 			Map<String, StateList> currMap = stateList.get(i).connectedStates;
-			for(String key: currMap.keySet()) {
-			
-				StateList transitionOutput = currMap.get(key);
-				if(transitionOutput.size() == 0) {
-					System.out.println("DEAD END");
-				}else {
+			if(currMap.keySet().size() > 0) {
+				for(String key: currMap.keySet()) {
+					
+					StateList transitionOutput = currMap.get(key);
 					for(int j= 0; j < transitionOutput.size(); j++) {					
 						System.out.println("(" + currState + ", " + key + ") = " + transitionOutput.get(j).name);
-					}					
-				}
-					
-				
+					}
+				}				
+			}else {
+				System.out.println("No Connections");
 			}
 			
 			System.out.println();

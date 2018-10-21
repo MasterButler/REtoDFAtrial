@@ -8,7 +8,7 @@ public class Driver {
 	
 	public static String forCheckingNumI() {
 		Scanner sc = new Scanner(System.in);
-		
+		System.out.print("Enter case: " );
 		return sc.nextLine();
 	}
 	
@@ -22,7 +22,6 @@ public class Driver {
 	
 	public static void main(String[] args) {
 		
-		System.out.print("Enter case: " );
 		String regexInput = forCheckingNum0();
 		
 		StateConstructor.REtoDFA(regexInput);
