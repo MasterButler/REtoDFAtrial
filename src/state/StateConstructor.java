@@ -26,10 +26,14 @@ public class StateConstructor {
 			State forBlank = new State("s0");
 			forBlank.isAccepting = true;
 			forBlank.setTransition(STR_EPSILON, forBlank);
+			
+			stateList.add(forBlank);
+			printStateTransitions(stateList);
 		}else {
 			stateList = REtoENFA(regexInput);
 			stateList = ENFAtoDFA(stateList);			
 		}
+		
 		return stateList;
 	}
 	
