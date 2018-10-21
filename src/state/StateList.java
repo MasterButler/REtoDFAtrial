@@ -29,6 +29,15 @@ public class StateList extends ArrayList<State>{
 		}
 		return -1;
 	}
+
+	public int getIndexOfNearestExisting(String name) {
+		for (State currState: this){
+			if(currState.name.contains(name)) {
+				return indexOf(currState);
+			}
+		}
+		return -1;
+	}
 	
 	public int getIndexIfExisting(String name) {
 		for (State currState: this){
@@ -98,6 +107,28 @@ public class StateList extends ArrayList<State>{
 		}
 		return acceptingStateIndices;
 	}
+	
+	public StateList getAcceptingStates() {
+		StateList acceptingStates = new StateList();
+		
+		for (State currState: this){
+			if(currState.isAccepting == true) {
+				acceptingStates.add(currState);
+			}
+		}
+		return acceptingStates;
+	}	
+	
+	public StateList getNonAcceptingStates() {
+		StateList acceptingStates = new StateList();
+		
+		for (State currState: this){
+			if(!currState.isAccepting == true) {
+				acceptingStates.add(currState);
+			}
+		}
+		return acceptingStates;
+	}	
 	
 	public ArrayList<String> getAllKeySets(){
 		Set<String> keySets = new HashSet<String>();

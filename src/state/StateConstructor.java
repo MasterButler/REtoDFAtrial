@@ -1,8 +1,10 @@
 package state;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 //((ab)|cd)ef|ghi
 //( (ab) | cd ) ef | ghi
@@ -36,7 +38,11 @@ public class StateConstructor {
 			regexInput = addParenthesisPrecedences(regexInput);
 			System.out.println("To solve: " + regexInput);
 			stateList = REtoENFA(regexInput);
-			stateList = ENFAtoDFA(stateList);			
+			stateList = ENFAtoDFA(stateList);	
+			for(int i = 0; i < stateList.size(); i++) {
+				stateList.get(i).name = "q" + i;
+			}
+			stateList = minimizeDFA(stateList);
 			for(int i = 0; i < stateList.size(); i++) {
 				stateList.get(i).name = "q" + i;
 			}
@@ -44,6 +50,235 @@ public class StateConstructor {
 		}
 		
 		return stateList;
+	}
+	//a|ba|b
+	public static StateList minimizeDFA(StateList stateList) {
+		ArrayList<StateList> equivalence_0 = new ArrayList<StateList>();
+		ArrayList<StateList> equivalence_1 = new ArrayList<StateList>();
+		
+		StateList accepting = stateList.getAcceptingStates();	
+		StateList nonAccepting = stateList.getNonAcceptingStates();
+		
+		equivalence_0.add(accepting);
+		equivalence_0.add(nonAccepting);
+		
+		equivalence_1 = equivalence_0;
+		
+		boolean equivalent = false;
+		while(!equivalent) {
+			equivalent = true;
+			
+//			System.out.println("=============================");
+//			System.out.println("== NEW ITERATION ============");
+//			System.out.println("=============================");
+//			System.out.println("EQUIVALENCE 0");
+//			for(int i = 0; i < equivalence_0.size(); i++) {
+//				System.out.print(":");
+//				for(int j = 0; j < equivalence_0.get(i).size(); j++) {
+//					System.out.print(equivalence_0.get(i).get(j).name + "\t");
+//				}
+//				System.out.println();
+//			}
+//			
+//			System.out.println("EQUIVALENCE 1");
+//			for(int i = 0; i < equivalence_1.size(); i++) {
+//				System.out.print(":");
+//				for(int j = 0; j < equivalence_1.get(i).size(); j++) {
+//					System.out.print(equivalence_1.get(i).get(j).name + "\t");
+//				}
+//				System.out.println();
+//			}
+			
+			equivalence_0 = equivalence_1;
+			equivalence_1 = new ArrayList<StateList>();	
+			
+			for(int i = 0; i < stateList.size(); i++) {
+				if(i == 0) {
+					equivalence_1.add(new StateList());
+					equivalence_1.get(0).add(stateList.get(i));
+				}else {
+					State toCheck = stateList.get(i);
+//					System.out.println("CHECKING STATE " + toCheck.name);
+					for(int j = 0; j < equivalence_1.size(); j++) {
+						State toCompare = equivalence_1.get(j).get(0);
+//						System.out.println("\tTO: " + toCompare.name);
+						Set<String> keySets = new HashSet<String>();
+						keySets.addAll(toCheck.connectedStates.keySet());
+						keySets.addAll(toCompare.connectedStates.keySet());
+						
+						boolean different = false;
+						String similarWith = toCompare.name;
+						for(String key: keySets) {
+							
+//							System.out.println("\t==========\n\tTRANSITION: " + key);
+							// hardcoded 0 since it's a dfa
+							String resultingStateName = toCheck.getTransition(key).size() != 0 ?  
+									toCheck.getTransition(key).get(0).name : "";
+									int resultingIndex = -1;
+									for(int k = 0; k < equivalence_0.size(); k++) {
+										if(equivalence_0.get(k).isExisting(resultingStateName)) {
+											resultingIndex = k;
+										}
+									}
+									
+									String comparingStateName = toCompare.getTransition(key).size() != 0 ? 
+											toCompare.getTransition(key).get(0).name : "";					
+											int comparingIndex = -1;
+											for(int k = 0; k < equivalence_0.size(); k++) {
+												if(equivalence_0.get(k).isExisting(comparingStateName)) {
+													comparingIndex = k;
+												}
+											}
+//											System.out.println();
+//											System.out.println("\tRESULTING: " + resultingIndex);
+//											System.out.println("\tCOMPARING: " + comparingIndex);
+//											System.out.println();
+											if(resultingIndex != comparingIndex) {
+												different = true;
+												similarWith = "";
+												break;
+											}
+											
+						}
+						if(different) {
+//						System.out.println("DIFFERENT");
+							if(j == equivalence_1.size()-1) {
+//								System.out.println("ADDING " + toCheck.name + " TO A NEW LIST\n");
+//							System.out.println("DIFFERENT, ADDING A NEW ONE");
+								StateList toAdd = new StateList();
+								toAdd.add(toCheck);
+								equivalence_1.add(toAdd);
+								break;
+							}
+						}else {
+							for(int l = 0; l < equivalence_1.size(); l++) {
+								if(equivalence_1.get(l).isExisting(similarWith)) {
+									equivalence_1.get(l).add(toCheck);
+//									System.out.println("SAME, PLACED IN LAYER " + l);
+									break;
+								}
+							}
+						}
+						if(!different) {
+							break;
+						}
+					}
+//					System.out.println();
+//					System.out.println("CURRENT EQUIVALENCE 1: ");
+//					System.out.println("EQUIVALENCE 1");
+//					for(int m = 0; m < equivalence_1.size(); m++) {
+//						System.out.print(":");
+//						for(int n = 0; n < equivalence_1.get(m).size(); n++) {
+//							System.out.print(equivalence_1.get(m).get(n).name + "\t");
+//						}
+//						System.out.println();
+//					}
+//					System.out.println();
+				}
+				
+			}
+			
+			/***************************************
+			 * check if equivalences are the same
+			 ***************************************/
+//			System.out.println("CHECK EQUIVALENCES");
+			if(equivalence_0.size() == equivalence_1.size()) {
+				for(int i = 0; i < equivalence_0.size(); i++) {
+//					System.out.println("COMPARE SIZES OF ");
+//					System.out.println();
+					if( (equivalence_0.get(i).containsAll( equivalence_1.get(i) ) == false
+							|| equivalence_1.get(i).containsAll( equivalence_0.get(i) ) == false ) ) {
+						equivalent = false;
+//						System.out.println("STILL NOT THE SAME");
+						break;
+					}
+						
+				}
+			}else {
+				equivalent = false;
+			}
+		}
+		
+//		System.out.println("GOT AN EQUIVALENT COMBINATION");
+//		System.out.println("EQUIVALENCE 0");
+//		for(int i = 0; i < equivalence_0.size(); i++) {
+//			System.out.print(":");
+//			for(int j = 0; j < equivalence_0.get(i).size(); j++) {
+//				System.out.print(equivalence_0.get(i).get(j).name + "\t");
+//			}
+//			System.out.println();
+//		}
+//		
+//		System.out.println("EQUIVALENCE 1");
+//		for(int i = 0; i < equivalence_1.size(); i++) {
+//			System.out.print(":");
+//			for(int j = 0; j < equivalence_1.get(i).size(); j++) {
+//				System.out.print(equivalence_1.get(i).get(j).name + "\t");
+//			}
+//			System.out.println();
+//		}
+//		
+		
+//		return stateList; 
+		
+		//convert ArrayList<StateList> to stateGroups
+		StateList groupedList = new StateList();
+		for(int i = 0; i < equivalence_1.size(); i++) {
+			StateGroup toConvert = new StateGroup(equivalence_1.get(i));
+			groupedList.add(toConvert);
+		}
+//		System.out.println("GROUPED_LIST SIZE IS " + groupedList.size());
+//		for(int i = 0; i < groupedList.size(); i++) {
+//			System.out.println(groupedList.get(i).name);
+//		}
+		StateList finalList = new StateList();
+		
+		StateGroup toConnect = null;
+		StateList toTraverse = new StateList();
+		
+		StateGroup initialState = ((StateGroup) groupedList.get(0));
+		toTraverse.add( initialState );
+		finalList.add( initialState );
+		while(toTraverse.size() > 0) {
+			toConnect = (StateGroup) toTraverse.remove(0);			
+			if(!toConnect.hasBeenTraversed) {
+//				finalList.add(toConnect);
+				ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
+				for(int i = 0; i < keySets.size(); i++) {
+					if(!keySets.get(i).equals(STR_EPSILON)) {						
+						String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
+//						System.out.println("SEARCHING FOR UNIT WITH NAME " + connectedStateName);
+						int connectedStateIndex = groupedList.getIndexOfNearestExisting(connectedStateName);
+						StateGroup connectedState = null;
+						if(connectedStateIndex == -1) {
+							System.out.println("CREATING NEW");
+//							groupedList.createNewState();
+//							System.out.println("heh");
+							StateGroup newConnection = toConnect.usedStates.createNewConnection(keySets.get(i));
+							groupedList.add(newConnection);
+							connectedState = newConnection;
+						}else {
+							connectedState = (StateGroup)groupedList.get(connectedStateIndex);							
+						}
+						
+						toTraverse.add(connectedState);
+						finalList.add(connectedState);
+						toConnect.setTransition(keySets.get(i), connectedState);
+//						System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+						// 
+					}
+				}
+			}
+			toConnect.hasBeenTraversed = true;
+		}
+		
+
+		System.out.println("============================");
+		System.out.println("MINIMIZED DFA TRANSITION");
+		System.out.println("============================");
+		printStateTransitions(finalList);
+		
+		return finalList;
 	}
 	
 	public static StateList ENFAtoDFA(StateList stateList) {		
