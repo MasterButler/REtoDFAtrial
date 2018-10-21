@@ -20,9 +20,16 @@ public class StateConstructor {
 	public static String STR_EPSILON = "~";
 	
 	public static StateList REtoDFA(String regexInput) {
-		StateList stateList = null;
-		stateList = REtoENFA(regexInput);
-		stateList = ENFAtoDFA(stateList);
+		StateList stateList = new StateList();
+		
+		if(regexInput.trim().equals("")) {
+			State forBlank = new State("s0");
+			forBlank.isAccepting = true;
+			forBlank.setTransition(STR_EPSILON, forBlank);
+		}else {
+			stateList = REtoENFA(regexInput);
+			stateList = ENFAtoDFA(stateList);			
+		}
 		return stateList;
 	}
 	

@@ -22,10 +22,10 @@ public class Driver {
 	
 	public static void main(String[] args) {
 		
-		String regexInput = forCheckingNum0();
+		String regexInput = forCheckingNumI();
 		
 		StateConstructor.REtoDFA(regexInput);
-		System.out.println("DONE");
+		System.out.println("DONE"); 
 		
 //		ArrayList<Integer> a = new ArrayList<>();
 //		ArrayList<Integer> b = new ArrayList<>();
