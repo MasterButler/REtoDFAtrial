@@ -31,18 +31,17 @@ public class StateConstructor {
 			printStateTransitions(stateList);
 		}else {
 			stateList = REtoENFA(regexInput);
+			
+
+
+
 			stateList = ENFAtoDFA(stateList);			
 		}
 		
 		return stateList;
 	}
 	
-	public static StateList ENFAtoDFA(StateList stateList) {
-		
-		System.out.println("EPSILON NFA STATE TRANSITION");
-		printStateTransitions(stateList);
-		
-		
+	public static StateList ENFAtoDFA(StateList stateList) {		
 		// Generate E-Closures of Each for easy indexing later on.
 		System.out.println("EPSILON CLOSURES");
 		StateList groupedList = new StateList();
@@ -71,20 +70,32 @@ public class StateConstructor {
 				for(int i = 0; i < keySets.size(); i++) {
 					if(!keySets.get(i).equals(STR_EPSILON)) {						
 						String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
-						StateGroup connectedState = (StateGroup)groupedList.get(groupedList.getIndexIfExisting(connectedStateName));
+						System.out.println("SEARCHING FOR UNIT WITH NAME " + connectedStateName);
+						int connectedStateIndex = groupedList.getIndexIfExisting(connectedStateName);
+						StateGroup connectedState = null;
+						if(connectedStateIndex == -1) {
+//							groupedList.createNewState();
+							System.out.println("heh");
+							connectedState = toConnect.usedStates.createNewConnection(keySets.get(i));
+						}else {
+							connectedState = (StateGroup)groupedList.get(connectedStateIndex);							
+						}
+
 						toTraverse.add(connectedState);
 						toConnect.setTransition(keySets.get(i), connectedState);
 //						System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+						// 
 					}
 				}
 			}
 			toConnect.hasBeenTraversed = true;
 		}
 		
-		System.out.println();
+		System.out.println("============================");
 		System.out.println("DFA STATE TRANSITION");
+		System.out.println("============================");
 		printStateTransitions(finalList);
-
+		
 		return finalList;
 	}
 	
@@ -140,7 +151,14 @@ public class StateConstructor {
 				}
 				
 				i++;
+				
 			}
+
+
+			System.out.println("============================");
+			System.out.println("EPSILON NFA STATE TRANSITION");
+			System.out.println("============================");
+			printStateTransitions(stateList);
 		}catch(Exception e) {
 			System.out.println("ERROR OCCURED AT CLUSTER #2");
 			e.printStackTrace();

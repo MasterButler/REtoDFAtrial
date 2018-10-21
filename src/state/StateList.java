@@ -126,4 +126,28 @@ public class StateList extends ArrayList<State>{
 		}
 		return name;
 	}
+	
+	public StateGroup createNewConnection(String transitionInput) {
+		
+		StateList connections = new StateList();
+		for(State currState: this) {
+//			System.out.println("CHECKING " + currState.name + " WITH TRANSITION OF " + transitionInput);
+			StateList toCheckList = currState.getTransition(transitionInput);
+			for(State toCheck: toCheckList) {
+				connections.addAll(toCheck.generateEClosures());	
+			}
+		}
+		Collections.sort(connections);
+		String name = "";
+		for(int i = 0; i < connections.size(); i++) {
+			name += connections.get(i).name;
+		}
+		StateGroup newConnection = null;
+		if(!isExisting(name)) {
+			System.out.println("OO NGA NO LOL");
+			newConnection = new StateGroup(connections);
+			return newConnection;
+		}
+		return null;
+	}
 }

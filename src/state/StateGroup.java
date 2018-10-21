@@ -21,4 +21,11 @@ public class StateGroup extends State{
 		usedStates = toCollapse;
 	}
 	
+	public StateGroup(String name) {
+		super();
+		
+		this.name = name;
+		this.usedStates = new StateList();
+	}
+	
 }
