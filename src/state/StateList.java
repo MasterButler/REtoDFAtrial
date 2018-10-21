@@ -71,7 +71,7 @@ public class StateList extends ArrayList<State>{
 		ArrayList<Integer> startingStateIndices = new ArrayList<Integer>();
 		
 		for (State currState: this){
-			if(currState.name.contains("s0")) {
+			if(currState.isStarting == true) {
 				startingStateIndices.add(indexOf(currState));
 			}
 		}

@@ -8,6 +8,7 @@ import java.util.Map;
 public class State implements Comparable<State>{
 	public String name;
 	public Map<String, StateList> connectedStates;
+	public boolean isStarting;
 	public boolean isAccepting;
 	public StateList epsilonClosures;
 	
@@ -43,6 +44,11 @@ public class State implements Comparable<State>{
 	public boolean setAccepting(boolean accepting) {
 		this.isAccepting = accepting;
 		return isAccepting;
+	}
+	
+	public boolean setStarting(boolean starting) {
+		this.isStarting = starting;
+		return isStarting;
 	}
 	
 	public StateList getTransition(String transitionInput) {

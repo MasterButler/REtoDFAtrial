@@ -15,6 +15,9 @@ public class StateGroup extends State{
 			if(toCollapse.get(i).isAccepting == true) {
 				this.isAccepting = true;
 			}
+			if(toCollapse.get(i).isStarting == true) {
+				this.isStarting= true;
+			}
 		}
 		this.name = name.trim();
 		this.hasBeenTraversed = false;

@@ -34,6 +34,7 @@ public class StateConstructor {
 			printStateTransitions(stateList);
 		}else {
 			regexInput = addParenthesisPrecedences(regexInput);
+			System.out.println("To solve: ");
 			stateList = REtoENFA(regexInput);
 			stateList = ENFAtoDFA(stateList);			
 			for(int i = 0; i < stateList.size(); i++) {
@@ -64,12 +65,14 @@ public class StateConstructor {
 		
 		StateGroup toConnect = null;
 		StateList toTraverse = new StateList();
-		toTraverse.add( ((StateGroup) groupedList.get(0)) );
 		
+		StateGroup initialState = ((StateGroup) groupedList.get(0));
+		toTraverse.add( initialState );
+		finalList.add( initialState );
 		while(toTraverse.size() > 0) {
 			toConnect = (StateGroup) toTraverse.remove(0);			
 			if(!toConnect.hasBeenTraversed) {
-				finalList.add(toConnect);
+//				finalList.add(toConnect);
 				ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
 				for(int i = 0; i < keySets.size(); i++) {
 					if(!keySets.get(i).equals(STR_EPSILON)) {						
@@ -86,8 +89,9 @@ public class StateConstructor {
 						}else {
 							connectedState = (StateGroup)groupedList.get(connectedStateIndex);							
 						}
-
+						
 						toTraverse.add(connectedState);
+						finalList.add(connectedState);
 						toConnect.setTransition(keySets.get(i), connectedState);
 //						System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
 						// 
@@ -108,6 +112,8 @@ public class StateConstructor {
 	public static StateList REtoENFA(String regexInput) {
 		System.out.println();
 		StateList stateList = construct(regexInput, "");
+		
+		stateList.get(stateList.getStartingStateIndex()).setStarting(true);
 		stateList.get(stateList.getEndingStateIndex()).setAccepting(true);
 		
 		// BREAK DOWN CASES WHERE THERE ARE CLUSTERS FORMED IN TRANSITION INPUTS
@@ -449,14 +455,14 @@ public class StateConstructor {
 				i = startingIndex+1;
 				found = false;
 				
-				System.out.print("RESULT: ");
-				System.out.println(input);
-				System.out.print("LEFT  : ");
-				System.out.println(input.substring(0, i-1));
-				System.out.print("RIGHT : ");
-				System.out.println(input.substring(i, input.length()));
-				System.out.println();
-				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
+//				System.out.print("RESULT: ");
+//				System.out.println(input);
+//				System.out.print("LEFT  : ");
+//				System.out.println(input.substring(0, i-1));
+//				System.out.print("RIGHT : ");
+//				System.out.println(input.substring(i, input.length()));
+//				System.out.println();
+//				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
 				
 			}
 		}
