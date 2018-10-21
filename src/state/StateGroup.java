@@ -3,7 +3,7 @@ package state;
 import java.util.ArrayList;
 
 public class StateGroup extends State{
-	public boolean isUsable;
+	public boolean hasBeenTraversed;
 	public StateList usedStates;
 	
 	public StateGroup(StateList toCollapse) {
@@ -17,12 +17,8 @@ public class StateGroup extends State{
 			}
 		}
 		this.name = name.trim();
-		this.isUsable = false;
+		this.hasBeenTraversed = false;
 		usedStates = toCollapse;
 	}
 	
-	public boolean setUsable(boolean usable) {
-		this.isUsable = usable;
-		return isUsable;
-	}
 }

@@ -19,18 +19,21 @@ public class StateConstructor {
 	
 	public static String STR_EPSILON = "~";
 	
-	public static void REtoDFA(String regexInput) {
-		
+	public static StateList REtoDFA(String regexInput) {
 		StateList stateList = null;
-		
-		// Convert to Epsilon NFA
 		stateList = REtoENFA(regexInput);
+		stateList = ENFAtoDFA(stateList);
+		return stateList;
+	}
+	
+	public static StateList ENFAtoDFA(StateList stateList) {
 		
 		System.out.println("EPSILON NFA STATE TRANSITION");
 		printStateTransitions(stateList);
 		
 		
 		// Generate E-Closures of Each for easy indexing later on.
+		System.out.println("EPSILON CLOSURES");
 		StateList groupedList = new StateList();
 		for(int i = 0; i < stateList.size(); i++) {
 			StateList eClosure = stateList.get(i).generateEClosures();
@@ -41,38 +44,49 @@ public class StateConstructor {
 			System.out.println();
 			StateGroup toDO = new StateGroup(eClosure);
 			groupedList.add(toDO);
-			System.out.println();
 		}
 		
-		StateGroup toConnect = ((StateGroup) groupedList.get(0));
-		for(boolean isFinished = false; !isFinished;) {
-			ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
-			for(int i = 0; i < keySets.size(); i++) {
-				String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
-				System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+		StateList finalList = new StateList();
+		
+		StateGroup toConnect = null;
+		StateList toTraverse = new StateList();
+		toTraverse.add( ((StateGroup) groupedList.get(0)) );
+		
+		while(toTraverse.size() > 0) {
+			toConnect = (StateGroup) toTraverse.remove(0);			
+			if(!toConnect.hasBeenTraversed) {
+				finalList.add(toConnect);
+				ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
+				for(int i = 0; i < keySets.size(); i++) {
+					String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
+					StateGroup connectedState = (StateGroup)groupedList.get(groupedList.getIndexIfExisting(connectedStateName));
+					toTraverse.add(connectedState);
+					toConnect.setTransition(keySets.get(i), connectedState);
+//					System.out.println("(" + groupedList.get(i).name + ", " + keySets.get(i) + ") = " + "E(" + connectedStateName + ")");
+				}
 			}
-			break;
+			toConnect.hasBeenTraversed = true;
 		}
 		
-		System.out.println("THIS IS MY NEW GROUPEDLIST");
-		printStateTransitions(groupedList);
+		System.out.println();
+		System.out.println("DFA STATE TRANSITION");
+		printStateTransitions(finalList);
 		
 		System.out.print("STARTING STATE: \t");
-		ArrayList<Integer> starting = groupedList.getStartingStateIndices();
+		ArrayList<Integer> starting = finalList.getStartingStateIndices();
 		for(int i = 0; i < starting.size(); i++) {
-			System.out.print(groupedList.get(starting.get(i)).name + " ");
+			System.out.print(finalList.get(starting.get(i)).name + " ");
 		}
 		System.out.println();
 		
 		System.out.print("ACCEPTING STATE: \t");
-		ArrayList<Integer> accepting = groupedList.getAcceptingStateIndex();
+		ArrayList<Integer> accepting = finalList.getAcceptingStateIndex();
 		for(int i = 0; i < accepting.size(); i++) {
-			System.out.print(groupedList.get(accepting.get(i)).name + " ");
+			System.out.print(finalList.get(accepting.get(i)).name + " ");
 		}
 		System.out.println();
 		
-		// Minimize the number of states
-		
+		return finalList;
 	}
 	
 	public static StateList REtoENFA(String regexInput) {

@@ -21,9 +21,18 @@ public class StateList extends ArrayList<State>{
 		return isExisting(state.name);
 	}
 	
-	public int getIfExisting(State state){
+	public int getIndexIfExisting(State state){
 		for(State currState: this) {
 			if(currState.name.equals(state.name)) {
+				return indexOf(currState);
+			}
+		}
+		return -1;
+	}
+	
+	public int getIndexIfExisting(String name) {
+		for (State currState: this){
+			if(currState.name.equals(name)) {
 				return indexOf(currState);
 			}
 		}
@@ -101,10 +110,14 @@ public class StateList extends ArrayList<State>{
 	}
 	
 	public String predictConnection(String transitionInput){
+		
 		StateList connections = new StateList();
 		for(State currState: this) {
-			currState.getTransition(transitionInput);
-			connections.addAll();
+//			System.out.println("CHECKING " + currState.name + " WITH TRANSITION OF " + transitionInput);
+			StateList toCheckList = currState.getTransition(transitionInput);
+			for(State toCheck: toCheckList) {
+				connections.addAll(toCheck.generateEClosures());	
+			}
 		}
 		Collections.sort(connections);
 		String name = "";
