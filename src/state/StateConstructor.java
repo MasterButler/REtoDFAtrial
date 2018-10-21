@@ -34,7 +34,7 @@ public class StateConstructor {
 			printStateTransitions(stateList);
 		}else {
 			regexInput = addParenthesisPrecedences(regexInput);
-			System.out.println("To solve: ");
+			System.out.println("To solve: " + regexInput);
 			stateList = REtoENFA(regexInput);
 			stateList = ENFAtoDFA(stateList);			
 			for(int i = 0; i < stateList.size(); i++) {
@@ -297,6 +297,22 @@ public class StateConstructor {
 	}
 	
 	public static void printStateTransitions(StateList stateList) {
+		System.out.print("STARTING STATE  : ");
+		ArrayList<Integer> starting = stateList.getStartingStateIndices();
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(stateList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE : ");
+		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(stateList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.println("TOTAL STATES    : " + stateList.size());
+		
 		// PRINT OUT THE STATE
 		for(int i = 0; i < stateList.size(); i++) {
 			String currState = stateList.get(i).name;
@@ -320,28 +336,13 @@ public class StateConstructor {
 		}
 		
 		
-		System.out.print("STARTING STATE  : ");
-		ArrayList<Integer> starting = stateList.getStartingStateIndices();
-		for(int i = 0; i < starting.size(); i++) {
-			System.out.print(stateList.get(starting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.print("ACCEPTING STATE : ");
-		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
-		for(int i = 0; i < accepting.size(); i++) {
-			System.out.print(stateList.get(accepting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.println("TOTAL STATES    : " + stateList.size());
 		
 	}
 	
 
 	public static String addParenthesisPrecedences(String input) {
 		input = addPadding(input, OR_OPERATOR);
-		return input;
+		return input; 	
 	}
 	
 	public static String addPadding(String input, char search) {
@@ -352,10 +353,10 @@ public class StateConstructor {
 		int startingIndex = 0;
 		
 		while(!done) {
-			
 			if(i < input.length()) {					
 				char currChar = input.charAt(i);
-	//			System.out.println("checking " + currChar);
+				System.out.println("checking " + currChar);
+				System.out.println("REMAINING WITH CHECKING " + input.substring(i, input.length()));
 				if(currChar == search) {					
 					startingIndex = i;
 					found = true;
@@ -393,14 +394,14 @@ public class StateConstructor {
 							if(balanceStack.size() > 0) {
 								balanceStack.remove(0);
 							}else{
-								input = input.substring(0, leftIndex) + "(" + input.substring(leftIndex, input.length());
+								input = input.substring(0, leftIndex+1) + "(" + input.substring(leftIndex+1, input.length());
 								closed = true;
 							}
 						}else if(currRead ==')') {
 							balanceStack.add(')');
 						}else if(currRead == search) {
 							if(balanceStack.size() == 0) {
-								input = input.substring(0, leftIndex) + "(" + input.substring(leftIndex, input.length());
+								input = input.substring(0, leftIndex+1) + "(" + input.substring(leftIndex+1, input.length());
 								closed = true;
 							}
 						}
@@ -412,18 +413,28 @@ public class StateConstructor {
 				}
 				
 				startingIndex += 2;
-				
 				/****************************
 				 * RIGHT SIDE ***************
 				 ****************************/
-				rightIndex = startingIndex;		
+				rightIndex = startingIndex;
 				rightIndex++;
+				System.out.println("CURR SYMBOL IS " + input.charAt(rightIndex));
+				System.out.println("CHECKING " + input.substring(0, rightIndex));
+				System.out.println("CHECKING " + input.substring(rightIndex, input.length()));
+
 				input = input.substring(0, rightIndex) + "(" + input.substring(rightIndex, input.length());
 //				System.out.println("OUTPUT IS NOW: " + input);
 				closed = false;
 				balanceStack = new ArrayList<Character>();
 				
 				rightIndex++; // since '(' is added
+				System.out.println();
+				System.out.println("AFTER ADDING");
+				System.out.println("CURR SYMBOL IS " + input.charAt(rightIndex));
+				System.out.println("CHECKING " + input.substring(0, rightIndex));
+				System.out.println("CHECKING " + input.substring(rightIndex, input.length()));
+
+//				closed = false;
 				while(!closed) {
 //					System.out.println("RIGHTINDEX IS NOW " + rightIndex);
 					if(rightIndex < input.length()) {
@@ -438,7 +449,8 @@ public class StateConstructor {
 							}
 						}else if(currRead =='(') {
 							balanceStack.add('(');
-						}else if(currRead == search) {
+						}else if(currRead == search){
+							System.out.println("FOUND THE | AT INDEX " + rightIndex);
 							if(balanceStack.size() == 0) {
 								input = input.substring(0, rightIndex) + ")" + input.substring(rightIndex, input.length());
 								closed = true;
@@ -455,14 +467,14 @@ public class StateConstructor {
 				i = startingIndex+1;
 				found = false;
 				
-//				System.out.print("RESULT: ");
-//				System.out.println(input);
-//				System.out.print("LEFT  : ");
-//				System.out.println(input.substring(0, i-1));
-//				System.out.print("RIGHT : ");
-//				System.out.println(input.substring(i, input.length()));
-//				System.out.println();
-//				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
+				System.out.print("RESULT: ");
+				System.out.println(input);
+				System.out.print("LEFT  : ");
+				System.out.println(input.substring(0, i-1));
+				System.out.print("RIGHT : ");
+				System.out.println(input.substring(i, input.length()));
+				System.out.println();
+				System.out.println("CURRENLTY LOOKING AT: " + i + " ('" + input.charAt(i) + "')");
 				
 			}
 		}
