@@ -37,24 +37,42 @@ public class StateConstructor {
 		}else {
 			regexInput = addParenthesisPrecedences(regexInput);
 			System.out.println("To solve: " + regexInput);
-			stateList = REtoENFA(regexInput);
-			stateList = ENFAtoDFA(stateList);	
-			for(int i = 0; i < stateList.size(); i++) {
-				stateList.get(i).name = "q" + i;
+			StateList eNFA = REtoENFA(regexInput);
+			
+			StateList DFA = ENFAtoDFA(eNFA);
+			
+			for(int i = 0; i < eNFA.size(); i++) {
+				eNFA.get(i).name = "q" + i;
+			}			
+			
+			for(int i = 0; i < DFA.size(); i++) {
+				DFA.get(i).name = "q" + i;
 			}
 			System.out.println("==============================");
 			System.out.println("DFA TRANSITION ===============");
 			System.out.println("==============================");
-			printStateTransitions(stateList);
-			stateList = minimizeDFA(stateList);
-			for(int i = 0; i < stateList.size(); i++) {
-				stateList.get(i).name = "q" + i;
+			printStateTransitions(DFA);
+			DFA = minimizeDFA(DFA);
+			for(int i = 0; i < DFA.size(); i++) {
+				DFA.get(i).name = "q" + i;
 			}
 			
+			String solutionFound = "";
+			if(DFA.size() <= eNFA.size()) {
+				solutionFound = "DFA";
+			}else {
+				solutionFound = "eNFA";
+			}
 			System.out.println("==============================");
-			System.out.println("FINAL MINIMIZED DFATRANSITION");
+			System.out.println("FINAL SOLUTION USING " + solutionFound);
 			System.out.println("==============================");
-			printStateTransitions(stateList);
+			
+			if(solutionFound.contains("DFA")) {				
+				printStateTransitions(DFA);
+			}else {
+				printStateTransitions(eNFA);
+			}
+			System.out.println("ENFA SIZE: " + eNFA.size());
 		}
 		
 		return stateList;
