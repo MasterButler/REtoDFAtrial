@@ -76,7 +76,9 @@ public class StateConstructor {
 						if(connectedStateIndex == -1) {
 //							groupedList.createNewState();
 							System.out.println("heh");
-							connectedState = toConnect.usedStates.createNewConnection(keySets.get(i));
+							StateGroup newConnection = toConnect.usedStates.createNewConnection(keySets.get(i));
+							groupedList.add(newConnection);
+							connectedState = newConnection;
 						}else {
 							connectedState = (StateGroup)groupedList.get(connectedStateIndex);							
 						}
