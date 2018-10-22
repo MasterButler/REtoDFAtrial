@@ -40,6 +40,7 @@ public class StateConstructor {
 			
 			System.out.println("ADDING PRECEDENCE MARKERS TO REGEX");
 			regexInput = addParenthesisPrecedences(regexInput);
+			regexInput = regexInput.replaceAll(" ", "[s]");
 			System.out.println("To solve: " + regexInput);
 			
 			System.out.println("CONVERTING REGEX TO ENFA");
@@ -48,6 +49,8 @@ public class StateConstructor {
 //			System.out.println("EPSILON NFA STATE TRANSITION");
 //			System.out.println("============================");
 //			printStateTransitions(stateList);
+			System.out.println("ENFA DONE (" + eNFA.size() + " states)");
+			System.out.println();
 			
 			System.out.println("CONVERTING ENFA TO DFA");
 			StateList DFA = ENFAtoDFA(eNFA);
@@ -61,6 +64,8 @@ public class StateConstructor {
 //			System.out.println("DFA TRANSITION ===============");
 //			System.out.println("==============================");
 //			printStateTransitions(DFA);
+			System.out.println("DFA DONE (" + DFA.size() + " states)");
+			System.out.println();
 			
 			System.out.println("MINIMIZING DFA");
 			DFA = minimizeDFA(DFA);
@@ -71,18 +76,21 @@ public class StateConstructor {
 //			System.out.println("MINIMIZED DFA TRANSITION");
 //			System.out.println("============================");
 //			printStateTransitions(DFA);
+			System.out.println("MINIMIZED DFA DONE (" + DFA.size() + " states)");
+			System.out.println();
+			
 			
 			System.out.println("DFA produced " + DFA.size());
 			System.out.println("ENFA produced " + eNFA.size());
 			String solutionFound = "";
 			if(DFA.size() <= eNFA.size()) {
-				solutionFound = "DFA";
+				solutionFound = "DFA (" + DFA.size() + " states)";
 			}else {
-				solutionFound = "eNFA";
+				solutionFound = "eNFA (" + eNFA.size() + " states)";
 			}
-			System.out.println("==============================");
+			System.out.println("=====================================");
 			System.out.println("FINAL SOLUTION USING " + solutionFound);
-			System.out.println("==============================");
+			System.out.println("=====================================");
 			
 			if(solutionFound.contains("DFA")) {				
 //				printStateTransitions(DFA);
@@ -258,7 +266,8 @@ public class StateConstructor {
 //			System.out.println();
 //		}
 //		
-//		System.out.println("EQUIVALENCE 1");
+//		System.out.println("");
+//		System.out.println("FINAL RESULTING EQUIVALENCE");
 //		for(int i = 0; i < equivalence_1.size(); i++) {
 //			System.out.print(":");
 //			for(int j = 0; j < equivalence_1.get(i).size(); j++) {
@@ -266,7 +275,7 @@ public class StateConstructor {
 //			}
 //			System.out.println();
 //		}
-//		
+		
 		
 //		return stateList; 
 		
@@ -295,7 +304,7 @@ public class StateConstructor {
 				ArrayList<String> keySets = toConnect.usedStates.getAllKeySets();
 				for(int i = 0; i < keySets.size(); i++) {
 					if(!keySets.get(i).equals(STR_EPSILON)) {						
-						String connectedStateName = toConnect.usedStates.predictConnection(keySets.get(i));
+						String connectedStateName = toConnect.usedStates.predictSingleConnection(keySets.get(i));
 //						System.out.println("SEARCHING FOR UNIT WITH NAME " + connectedStateName);
 						int connectedStateIndex = groupedList.getIndexOfNearestExisting(connectedStateName);
 						StateGroup connectedState = null;
@@ -309,7 +318,7 @@ public class StateConstructor {
 						}else {
 							connectedState = (StateGroup)groupedList.get(connectedStateIndex);							
 						}
-						
+//						System.out.println(toConnect.name + " goes to " + connectedState.name);
 						toTraverse.add(connectedState);
 						finalList.add(connectedState);
 						toConnect.setTransition(keySets.get(i), connectedState);
@@ -317,6 +326,7 @@ public class StateConstructor {
 						// 
 					}
 				}
+//				System.out.println();
 			}
 			toConnect.hasBeenTraversed = true;
 		}
@@ -527,6 +537,14 @@ public class StateConstructor {
 //						System.out.println("TRANS: " + transitionInput);
 //						System.out.println("LEN OF TRANSITION OUTPUT:");
 						regex = regex.substring(transitionInput.length());
+					}else if(regex.charAt(0) == '['){
+						String groupedClass = "";
+						
+						while(groupedClass.endsWith("]") == false) {
+							groupedClass += regex.charAt(0);
+							regex = regex.substring(1);
+						}
+						transitionInput = groupedClass;
 					}else {
 						transitionInput = regex.charAt(0) + "";
 						regex = regex.substring(1);
@@ -542,7 +560,26 @@ public class StateConstructor {
 					
 					from = new State("q" + rootState + state + "0");
 					to = new State("q" + rootState + state + "1");
-					from.setTransition(transitionInput, to);
+					if(transitionInput.contains("[")) {
+						ArrayList<String> transitionList = new ArrayList<String>();
+						if( transitionInput.contains("a-z") ) {
+							transitionList.addAll(getLowerCaseSet());
+						}
+						if( transitionInput.contains("A-Z") ) {
+							transitionList.addAll(getUpperCaseSet());
+						}
+						if( transitionInput.contains("0-9") ) {
+							transitionList.addAll(getNumberSet());
+						}
+						if( transitionInput.contains("s")) {
+							transitionList.add(" ");
+						}
+						for(int tl = 0; tl < transitionList.size(); tl++) {
+							from.setTransition(transitionList.get(tl), to);
+						}
+					}else {
+						from.setTransition(transitionInput, to);						
+					}
 					
 					epsilonStart.setTransition(STR_EPSILON, from);
 					
@@ -861,6 +898,33 @@ public class StateConstructor {
 		
 	}
 
+	public static ArrayList<String> getLowerCaseSet(){
+		ArrayList<String> lowerSet = new ArrayList<>();
+		for(char a = 'a'; a <= 'z'; a++) {
+//			System.out.print(a);
+			lowerSet.add(String.valueOf(a));
+		}
+		return lowerSet;
+	}
+	
+	public static ArrayList<String> getUpperCaseSet(){
+		ArrayList<String> upperSet = new ArrayList<>();
+		for(char a = 'A'; a <= 'Z'; a++) { 	
+//			System.out.print(a);
+			upperSet.add(String.valueOf(a));
+		}
+		return upperSet;
+	}
+	
+	public static ArrayList<String> getNumberSet(){
+		ArrayList<String> numberSet = new ArrayList<>();
+		for(char a = '0'; a <= '9'; a++) {
+//			System.out.print(a);
+			numberSet.add(String.valueOf(a));
+		}
+		return numberSet;
+	}
+	
 }
 //(0|1)*1(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)
 
