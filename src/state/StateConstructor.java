@@ -37,15 +37,19 @@ public class StateConstructor {
 //			printStateTransitions(stateList);
 		}else {
 			String unedited = regexInput;
+			
+			System.out.println("ADDING PRECEDENCE MARKERS TO REGEX");
 			regexInput = addParenthesisPrecedences(regexInput);
 			System.out.println("To solve: " + regexInput);
 			
+			System.out.println("CONVERTING REGEX TO ENFA");
 			StateList eNFA = REtoENFA(regexInput);
 //			System.out.println("============================");
 //			System.out.println("EPSILON NFA STATE TRANSITION");
 //			System.out.println("============================");
 //			printStateTransitions(stateList);
 			
+			System.out.println("CONVERTING ENFA TO DFA");
 			StateList DFA = ENFAtoDFA(eNFA);
 			for(int i = 0; i < eNFA.size(); i++) {
 				eNFA.get(i).name = "q" + i;
@@ -58,6 +62,7 @@ public class StateConstructor {
 //			System.out.println("==============================");
 //			printStateTransitions(DFA);
 			
+			System.out.println("MINIMIZING DFA");
 			DFA = minimizeDFA(DFA);
 			for(int i = 0; i < DFA.size(); i++) {
 				DFA.get(i).name = "q" + i;
@@ -67,6 +72,8 @@ public class StateConstructor {
 //			System.out.println("============================");
 //			printStateTransitions(DFA);
 			
+			System.out.println("DFA produced " + DFA.size());
+			System.out.println("ENFA produced " + eNFA.size());
 			String solutionFound = "";
 			if(DFA.size() <= eNFA.size()) {
 				solutionFound = "DFA";
@@ -707,7 +714,7 @@ public class StateConstructor {
 
 
 	public static void printTransitionTable(StateList stateList, String regexInput) {
-		System.out.println("TRANSITION TABLE FOR REGULAR EXPRESSION " + regexInput);
+		System.out.println("REGULAR EXPRESSION " + regexInput);
 		
 		String toPrint = "";
 		ArrayList<String> keySets = stateList.getAllKeySets();
