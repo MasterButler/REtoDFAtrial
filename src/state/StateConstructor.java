@@ -391,7 +391,7 @@ public class StateConstructor {
 	}
 	
 	public static StateList REtoENFA(String regexInput) {
-		System.out.println();
+//		System.out.println();
 		StateList stateList = construct(regexInput, "");
 		
 		stateList.get(stateList.getStartingStateIndex()).setStarting(true);
@@ -738,7 +738,12 @@ public class StateConstructor {
 		toPrint += "      |         |";
 		for(int i = 0 ; i < keySets.size(); i++) {
 			if(i == 0) {
-				toPrint +="Inputs  ";
+				toPrint +="Inputs ";
+				if(i == keySets.size()-1) {
+					toPrint += "|";
+				}else {
+					toPrint += " ";
+				}
 			}else if(i == keySets.size()-1) {
 				toPrint += "\t|";
 			}else {
@@ -760,7 +765,7 @@ public class StateConstructor {
 		}
 		toPrint+="\n";
 		
-		toPrint += "      ----------";
+		toPrint += "      -----------";
 		for(int i = 0 ; i < keySets.size(); i++) {
 			toPrint += "--------";
 		}
