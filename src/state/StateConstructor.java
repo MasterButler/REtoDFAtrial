@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class StateConstructor {
 	
+	public static char NULL_SYMBOL = 'Ø';
 	// a OR b
 	public static char OR_OPERATOR = '|';
 	// a >= 1
@@ -33,29 +34,38 @@ public class StateConstructor {
 			forBlank.setTransition(STR_EPSILON, forBlank);
 			
 			stateList.add(forBlank);
-			printStateTransitions(stateList);
+//			printStateTransitions(stateList);
 		}else {
+			String unedited = regexInput;
 			regexInput = addParenthesisPrecedences(regexInput);
 			System.out.println("To solve: " + regexInput);
+			
 			StateList eNFA = REtoENFA(regexInput);
+//			System.out.println("============================");
+//			System.out.println("EPSILON NFA STATE TRANSITION");
+//			System.out.println("============================");
+//			printStateTransitions(stateList);
 			
 			StateList DFA = ENFAtoDFA(eNFA);
-			
 			for(int i = 0; i < eNFA.size(); i++) {
 				eNFA.get(i).name = "q" + i;
 			}			
-			
 			for(int i = 0; i < DFA.size(); i++) {
 				DFA.get(i).name = "q" + i;
 			}
-			System.out.println("==============================");
-			System.out.println("DFA TRANSITION ===============");
-			System.out.println("==============================");
-			printStateTransitions(DFA);
+//			System.out.println("==============================");
+//			System.out.println("DFA TRANSITION ===============");
+//			System.out.println("==============================");
+//			printStateTransitions(DFA);
+			
 			DFA = minimizeDFA(DFA);
 			for(int i = 0; i < DFA.size(); i++) {
 				DFA.get(i).name = "q" + i;
 			}
+//			System.out.println("============================");
+//			System.out.println("MINIMIZED DFA TRANSITION");
+//			System.out.println("============================");
+//			printStateTransitions(DFA);
 			
 			String solutionFound = "";
 			if(DFA.size() <= eNFA.size()) {
@@ -68,11 +78,12 @@ public class StateConstructor {
 			System.out.println("==============================");
 			
 			if(solutionFound.contains("DFA")) {				
-				printStateTransitions(DFA);
+//				printStateTransitions(DFA);
+				printTransitionTable(DFA, unedited);
 			}else {
 				printStateTransitions(eNFA);
 			}
-			System.out.println("ENFA SIZE: " + eNFA.size());
+//			System.out.println("ENFA SIZE: " + eNFA.size());
 		}
 		
 		return stateList;
@@ -304,25 +315,22 @@ public class StateConstructor {
 		}
 		
 
-		System.out.println("============================");
-		System.out.println("MINIMIZED DFA TRANSITION");
-		System.out.println("============================");
-		printStateTransitions(finalList);
+
 		
 		return finalList;
 	}
 	
 	public static StateList ENFAtoDFA(StateList stateList) {		
 		// Generate E-Closures of Each for easy indexing later on.
-		System.out.println("EPSILON CLOSURES");
+//		System.out.println("EPSILON CLOSURES");
 		StateList groupedList = new StateList();
 		for(int i = 0; i < stateList.size(); i++) {
 			StateList eClosure = stateList.get(i).generateEClosures();
 //			System.out.print("E(" + stateList.get(i).name + ")\t= ");
-			for(int j = 0; j < eClosure.size(); j++) {
-				System.out.print(eClosure.get(j).name + " ");
-			}
-			System.out.println();
+//			for(int j = 0; j < eClosure.size(); j++) {
+//				System.out.print(eClosure.get(j).name + " ");
+//			}
+//			System.out.println();
 			StateGroup toDO = new StateGroup(eClosure);
 			groupedList.add(toDO);
 		}
@@ -367,10 +375,10 @@ public class StateConstructor {
 			toConnect.hasBeenTraversed = true;
 		}
 		
-		System.out.println("============================");
-		System.out.println("DFA STATE TRANSITION");
-		System.out.println("============================");
-		printStateTransitions(finalList);
+//		System.out.println("============================");
+//		System.out.println("DFA STATE TRANSITION");
+//		System.out.println("============================");
+//		printStateTransitions(finalList);
 		
 		return finalList;
 	}
@@ -431,12 +439,6 @@ public class StateConstructor {
 				i++;
 				
 			}
-
-
-			System.out.println("============================");
-			System.out.println("EPSILON NFA STATE TRANSITION");
-			System.out.println("============================");
-			printStateTransitions(stateList);
 		}catch(Exception e) {
 			System.out.println("ERROR OCCURED AT CLUSTER #2");
 			e.printStackTrace();
@@ -561,63 +563,6 @@ public class StateConstructor {
 
 		return stateList;
 	}
-	
-	public static void printStateTransitions(StateList stateList) {
-		System.out.print("STARTING STATE  : ");
-		ArrayList<Integer> starting = stateList.getStartingStateIndices();
-		for(int i = 0; i < starting.size(); i++) {
-			System.out.print(stateList.get(starting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.print("ACCEPTING STATE : ");
-		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
-		for(int i = 0; i < accepting.size(); i++) {
-			System.out.print(stateList.get(accepting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.println("TOTAL STATES    : " + stateList.size());
-		
-		// PRINT OUT THE STATE
-		for(int i = 0; i < stateList.size(); i++) {
-			String currState = stateList.get(i).name;
-			
-			System.out.println(currState);
-			Map<String, StateList> currMap = stateList.get(i).connectedStates;
-			if(currMap.keySet().size() > 0) {
-				for(String key: currMap.keySet()) {
-					
-					StateList transitionOutput = currMap.get(key);
-					for(int j= 0; j < transitionOutput.size(); j++) {					
-						System.out.println("(" + currState + ", " + key + ") = " + transitionOutput.get(j).name);
-					}
-				}				
-			}else {
-				System.out.println("No Connections");
-			}
-			
-			System.out.println();
-			
-		}
-		
-		System.out.print("STARTING STATE  : ");
-		for(int i = 0; i < starting.size(); i++) {
-			System.out.print(stateList.get(starting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.print("ACCEPTING STATE : ");
-		for(int i = 0; i < accepting.size(); i++) {
-			System.out.print(stateList.get(accepting.get(i)).name + " ");
-		}
-		System.out.println();
-		
-		System.out.println("TOTAL STATES    : " + stateList.size());
-		
-		
-	}
-	
 
 	public static String addParenthesisPrecedences(String input) {
 		input = addPadding(input, OR_OPERATOR);
@@ -759,9 +704,145 @@ public class StateConstructor {
 		}
 		return input;
 	}
-	
-}
 
+
+	public static void printTransitionTable(StateList stateList, String regexInput) {
+		System.out.println("TRANSITION TABLE FOR REGULAR EXPRESSION " + regexInput);
+		
+		String toPrint = "";
+		ArrayList<String> keySets = stateList.getAllKeySets();
+		
+		toPrint += "      -----------";
+		for(int i = 0 ; i < keySets.size(); i++) {
+			toPrint += "--------";
+		}
+		toPrint+="\n";
+
+		toPrint += "      |         |";
+		for(int i = 0 ; i < keySets.size(); i++) {
+			if(i == keySets.size()-1) {
+				toPrint += "\t|";
+			}else {
+				toPrint += "\t";
+			}
+		}
+		toPrint+="\n";
+		
+		toPrint += "      |State    |";
+		for(int i = 0 ; i < keySets.size(); i++) {
+			if(i == 0) {
+				toPrint +="Inputs  ";
+			}else if(i == keySets.size()-1) {
+				toPrint += "\t|";
+			}else {
+				toPrint += "\t";
+			}
+		}
+		toPrint+="\n";
+		
+		toPrint += "      |         |";
+		for(int i = 0 ; i < keySets.size(); i++) {
+			toPrint += keySets.get(i) + "\t|";
+		}
+		toPrint+="\n";
+		
+		toPrint += "      ----------";
+		for(int i = 0 ; i < keySets.size(); i++) {
+			toPrint += "--------";
+		}
+		toPrint+="\n";
+		
+		for(int i = 0; i < stateList.size(); i++) {
+			State currState = stateList.get(i);
+			if(currState.isStarting) {
+				toPrint += " ->";
+			}else {
+				toPrint += "   ";
+			}
+			
+			if(currState.isAccepting) {
+				toPrint += " *";
+			}else {
+				toPrint += "  ";
+			}
+			toPrint += " |" + currState.name + "\t|";
+			
+			for(int j = 0; j < keySets.size(); j++) {
+				String connection = currState.getTransition(keySets.get(j)).size() > 0 ? 
+						currState.getTransition(keySets.get(j)).get(0).name 
+						: String.valueOf(NULL_SYMBOL);
+				toPrint += connection + "\t|";
+			}
+			toPrint += "\n";
+		}
+		
+		toPrint += "      -----------";;
+		for(int i = 0 ; i < keySets.size(); i++) {
+			toPrint += "--------";
+		}
+		toPrint+="\n";
+		
+		
+		System.out.println(toPrint);
+	}
+	
+	public static void printStateTransitions(StateList stateList) {
+		System.out.print("STARTING STATE  : ");
+		ArrayList<Integer> starting = stateList.getStartingStateIndices();
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(stateList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE : ");
+		ArrayList<Integer> accepting = stateList.getAcceptingStateIndex();
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(stateList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.println("TOTAL STATES    : " + stateList.size());
+		
+		// PRINT OUT THE STATE
+		for(int i = 0; i < stateList.size(); i++) {
+			String currState = stateList.get(i).name;
+			
+			System.out.println(currState);
+			Map<String, StateList> currMap = stateList.get(i).connectedStates;
+			if(currMap.keySet().size() > 0) {
+				for(String key: currMap.keySet()) {
+					
+					StateList transitionOutput = currMap.get(key);
+					for(int j= 0; j < transitionOutput.size(); j++) {					
+						System.out.println("(" + currState + ", " + key + ") = " + transitionOutput.get(j).name);
+					}
+				}				
+			}else {
+				System.out.println("No Connections");
+			}
+			
+			System.out.println();
+			
+		}
+		
+		System.out.print("STARTING STATE  : ");
+		for(int i = 0; i < starting.size(); i++) {
+			System.out.print(stateList.get(starting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.print("ACCEPTING STATE : ");
+		for(int i = 0; i < accepting.size(); i++) {
+			System.out.print(stateList.get(accepting.get(i)).name + " ");
+		}
+		System.out.println();
+		
+		System.out.println("TOTAL STATES    : " + stateList.size());
+		
+		
+	}
+
+}
 //(0|1)*1(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)
 
 //(0|1)*1(0|1)
