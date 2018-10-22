@@ -473,7 +473,7 @@ public class StateConstructor {
 						// connect to end of new set
 						newStates.get(newStates.getEndingStateIndex()).setTransition(STR_EPSILON, stateList.get(i).getTransition(key));
 						
-						// sever connection of previously connected complicated shit
+						// sever connection of previously connected complicated nodes
 						stateList.get(i).removeTransitionWithInputOf(key);
 						
 						// restart the check
