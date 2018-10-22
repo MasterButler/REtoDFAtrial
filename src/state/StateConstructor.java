@@ -718,17 +718,17 @@ public class StateConstructor {
 		}
 		toPrint+="\n";
 
-		toPrint += "      |         |";
-		for(int i = 0 ; i < keySets.size(); i++) {
-			if(i == keySets.size()-1) {
-				toPrint += "\t|";
-			}else {
-				toPrint += "\t";
-			}
-		}
-		toPrint+="\n";
+//		toPrint += "      |         |";
+//		for(int i = 0 ; i < keySets.size(); i++) {
+//			if(i == keySets.size()-1) {
+//				toPrint += "\t|";
+//			}else {
+//				toPrint += "\t";
+//			}
+//		}
+//		toPrint+="\n";
 		
-		toPrint += "      |State    |";
+		toPrint += "      |         |";
 		for(int i = 0 ; i < keySets.size(); i++) {
 			if(i == 0) {
 				toPrint +="Inputs  ";
@@ -739,6 +739,13 @@ public class StateConstructor {
 			}
 		}
 		toPrint+="\n";
+		
+		toPrint += "      |State    |";
+		for(int i = 0 ; i < keySets.size(); i++) {
+			toPrint += "--------";				
+		}
+		toPrint+="\n";
+
 		
 		toPrint += "      |         |";
 		for(int i = 0 ; i < keySets.size(); i++) {
