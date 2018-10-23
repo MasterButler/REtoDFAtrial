@@ -8,7 +8,8 @@ public class Driver {
 	
 	public static String forCheckingNumI() {
 		Scanner sc = new Scanner(System.in);
-		System.out.print("Enter case: " );
+		
+		System.out.print("Enter case (~ for epsilon): ");
 		return sc.nextLine();
 	}
 	
@@ -24,6 +25,18 @@ public class Driver {
 		return "(0|1)*1(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)(0|1)";
 	}
 	
+	public static String forCheckingNum3() {
+		return "[a-z]?[a-z]?[a-z]?[a-z]?[a-z]?[a-z]?[a-z]?[a-z]?[a-z]?[a-z]?";
+	}
+	
+	public static String forCheckingNum4() {
+		return "(a+|~)";
+	}
+	
+	public static String forCheckingNumWrong() {
+		return "(a+|~!)";
+	}
+	
 	public static void main(String[] args) {
 		
 		String regexInput = forCheckingNumI();
@@ -36,42 +49,42 @@ public class Driver {
 		System.out.println("==================================");
 		System.out.println("== CASE 1 ========================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("ab|cde"));
+		System.out.println(StateConstructor.REtoDFA("ab|cde"));
 		// must return (ab)|(cde)
 		
 		System.out.println();
 		System.out.println("==================================");
 		System.out.println("== CASE 2A =======================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("a(bc)|de"));
+		System.out.println(StateConstructor.REtoDFA("a(bc)|de"));
 		// must return (a(bc))|(de)
 
 		System.out.println();
 		System.out.println("==================================");
 		System.out.println("== CASE 2B =======================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("ab|(cd)e"));
+		System.out.println(StateConstructor.REtoDFA("ab|(cd)e"));
 		// must return (ab)|((cd)e)
 
 		System.out.println();
 		System.out.println("==================================");
 		System.out.println("== CASE 3 ========================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("(ab)c|de"));
+		System.out.println(StateConstructor.REtoDFA("(ab)c|de"));
 		// must return ((ab)c)|(de)
 		
 		System.out.println();
 		System.out.println("==================================");
 		System.out.println("== CASE 4 ========================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("a(b|c)de"));
+		System.out.println(StateConstructor.REtoDFA("a(b|c)de"));
 		// must return a((b)|(c))de
 
 		System.out.println();
 		System.out.println("==================================");
 		System.out.println("== CASE 5 ========================");
 		System.out.println();
-		StateConstructor.addParenthesisPrecedences("ab|cd|ef");
+		StateConstructor.REtoDFA("ab|cd|ef");
 		// must return (ab)|(cd)|(ef)
 		
 		System.out.println();
@@ -80,7 +93,7 @@ public class Driver {
 		System.out.println("==================================");
 		System.out.println("== CASE FINAL A ==================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("a((bc)*d|e)(f|g)|hi"));
+		System.out.println(StateConstructor.REtoDFA("a((bc)*d|e)(f|g)|hi"));
 		// must return (ab)|(cd)|(ef)
 		
 		System.out.println();
@@ -89,7 +102,7 @@ public class Driver {
 		System.out.println("==================================");
 		System.out.println("== CASE FINAL B ==================");
 		System.out.println();
-		System.out.println(StateConstructor.addParenthesisPrecedences("a"));
+		System.out.println(StateConstructor.REtoDFA("a"));
 		// must return (ab)|(cd)|(ef)
 		
 		
