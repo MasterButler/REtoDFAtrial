@@ -40,7 +40,30 @@ public class NFAServiceTest {
 	}
 	
 	
-	public void CheckStates(){
+	public void CheckSENFAtates(){
+		List<String> results = new ArrayList<>();
+		
+		for (int i =0; i<tests.size(); i++) {
+			StateList stateList = new StateList();
+			stateList = StateConstructor.REtoENFA(tests.get(i).getRegex());
+			
+			if (stateList.size() == tests.get(i).getNumStatesNFA()) {
+				results.add("PASS i : " + (i+1) + "   states predicted: " + stateList.size() + "   actual states: " + tests.get(i).getNumStatesNFA());
+			}
+			
+			else{
+				results.add("FAIL i : " + (i+1) + "   states predicted: " + stateList.size() + "   actual states: " + tests.get(i).getNumStatesNFA());
+			}
+		}	
+		
+		for (int i =0; i<results.size(); i++) { 
+			System.out.println(results.get(i));
+		}
+		
+		
+	}
+	
+	public void CheckDFAStates(){
 		List<String> results = new ArrayList<>();
 		
 		for (int i =0; i<tests.size(); i++) {

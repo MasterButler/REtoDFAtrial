@@ -25,7 +25,8 @@ public class TestDriver {
 	
 	public static void main(String[] args) {
 		NFAServiceTest nfatest = new NFAServiceTest();
-		nfatest.CheckStates();
+		nfatest.CheckSENFAtates();
+//		nfatest.CheckDFAStates();
 		
 	}
 }
