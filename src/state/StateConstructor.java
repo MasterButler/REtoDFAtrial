@@ -58,10 +58,10 @@ public class StateConstructor {
 				
 				System.out.println("CONVERTING REGEX TO ENFA");
 				StateList eNFA = REtoENFA(regexInput);
-//				System.out.println("============================");
-//				System.out.println("EPSILON NFA STATE TRANSITION");
-//				System.out.println("============================");
-//				printStateTransitions(stateList);
+				System.out.println("============================");
+				System.out.println("EPSILON NFA STATE TRANSITION");
+				System.out.println("============================");
+				printStateTransitions(eNFA);
 				System.out.println("ENFA DONE (" + eNFA.size() + " states)");
 				System.out.println();
 				
@@ -88,7 +88,6 @@ public class StateConstructor {
 					return null;
 				}
 				
-				
 				System.out.println("MINIMIZING DFA");
 				DFA = minimizeDFA(DFA);
 				for(int i = 0; i < DFA.size(); i++) {
@@ -106,24 +105,12 @@ public class StateConstructor {
 				}
 				
 				System.out.println("DFA produced " + DFA.size());
-				System.out.println("ENFA produced " + eNFA.size());
-				String solutionFound = "";
-				if(DFA.size() <= eNFA.size()) {
-					solutionFound = "minimized DFA (" + DFA.size() + " states)";
-				}else {
-					solutionFound = "eNFA (" + eNFA.size() + " states)";
-				}
+
 				System.out.println("=====================================");
-				System.out.println("FINAL SOLUTION USING " + solutionFound);
+				System.out.println("FINAL SOLUTION USING minimized DFA (" + DFA.size() + " states)");
 				System.out.println("=====================================");
 				
-				if(solutionFound.contains("DFA")) {				
-//					printStateTransitions(DFA);
-					printTransitionTable(DFA, unedited);
-				}else {
-					printStateTransitions(eNFA);
-				}
-//				System.out.println("ENFA SIZE: " + eNFA.size());
+				printTransitionTable(DFA, unedited);
 			}
 			
 			return stateList;
