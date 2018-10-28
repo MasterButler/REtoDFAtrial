@@ -1,10 +1,68 @@
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Scanner;
 
+import static guru.nidi.graphviz.model.Factory.*;
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.RankDir;
+import guru.nidi.graphviz.attribute.Style;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.model.Node;
+import state.State;
 import state.StateConstructor;
+import state.StateList;
 
 public class Driver {
+	
+    /**
+     * Load the config.properties file.
+     */
+    private final static String cfgProp = "src/config.properties";
+    private final static Properties configFile = new Properties() {
+        private final static long serialVersionUID = 1L; {
+            try {
+            	System.out.println(cfgProp);
+                load(new FileInputStream(cfgProp));
+            } catch (Exception e) { 
+            	e.printStackTrace(); 
+            }
+        }
+    };
+
+	
+	public static void main(String[] args) {
+		
+		String regexInput = forCheckingNumI();
+		StateList finalList = StateConstructor.REtoDFA(regexInput);
+		
+		System.out.println("FINAL LIST: ");
+		StateConstructor.printStateTransitions(finalList);
+		
+		MutableGraph minimized = mutGraph("Minimized DFA for " + regexInput).setDirected(true);
+		
+//		for(int i = 0; i < 1; i++) {
+		for(int i = 0; i < finalList.size(); i++) {
+			State currState = finalList.get(i);
+			
+			MutableGraph currGraph = currState.getGraphVizGraph();
+			System.out.println("ADDING TO FINAL LIST PROPAGATED FROM " + finalList.get(i));
+			currGraph.addTo(minimized);		
+		}
+		
+		try {
+			String curr = String.valueOf(System.currentTimeMillis());
+			Graphviz.fromGraph(minimized).height(5000).render(Format.PNG).toFile(new File("output/" + curr + ".png"));
+			System.out.println("DONE");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 	
 	public static String forCheckingNumI() {
 		Scanner sc = new Scanner(System.in);
@@ -35,14 +93,6 @@ public class Driver {
 	
 	public static String forCheckingNumWrong() {
 		return "(a+|~!)";
-	}
-	
-	public static void main(String[] args) {
-		
-		String regexInput = forCheckingNumI();
-		StateConstructor.REtoDFA(regexInput);
-		
-//		testPrecedence();
 	}
 	
 	public static void testPrecedence() {

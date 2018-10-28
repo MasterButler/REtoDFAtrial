@@ -1,9 +1,21 @@
 package state;
-import java.util.ArrayList;
+import static guru.nidi.graphviz.model.Factory.graph;
+import static guru.nidi.graphviz.model.Factory.mutGraph;
+import static guru.nidi.graphviz.model.Factory.mutNode;
+import static guru.nidi.graphviz.model.Factory.to;
+
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
+
+import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.RankDir;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.model.MutableNode;
 
 public class State implements Comparable<State>{
 	public String name;
@@ -82,5 +94,68 @@ public class State implements Comparable<State>{
 		Collections.sort(this.epsilonClosures);
 		
 		return this.epsilonClosures;
+	}
+	
+	
+	public MutableGraph getGraphVizGraph() {
+		MutableNode a = mutNode(this.name);
+		System.out.print(this.name);
+		if(isAccepting) {
+			a.add(Shape.DOUBLE_CIRCLE);
+			System.out.println(": Acccepting");
+		}else {
+			a.add(Shape.CIRCLE);
+			System.out.println(": Non-acccepting");
+		}
+		System.out.println();
+		
+		MutableGraph mutGraph = mutGraph(this.name).setDirected(true);		
+		
+//		StateList connections = new StateList();
+//			connections.addAll(getTransition(key));			
+		for(String key: connectedStates.keySet()) {
+			System.out.println("Adding transition " + key);
+			State currState = getTransition(key).get(0);
+			MutableNode currNode = mutNode(currState.name);
+			
+			System.out.print(currState.name);
+			if(currState.isAccepting) {			
+				currNode.add(Shape.DOUBLE_CIRCLE);
+				System.out.println(": Acccepting");
+			}else {
+				currNode.add(Shape.CIRCLE);
+				System.out.println(": Non-acccepting");
+			}
+			
+			String label = key;
+			if(label.trim().length() == 0) {
+				label = "<space>";
+			}
+			Graph g = graph(key).directed()
+			        .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+			        .with(
+			        	a.addLink(to(currNode).with(Label.of(label)))
+			        );
+			g.addTo(mutGraph);
+			System.out.println();
+		}
+		
+		Iterator<MutableGraph> it = mutGraph.graphs().iterator();
+		while(it.hasNext()) {
+			MutableGraph element = it.next();
+			System.out.println(element.name());
+			
+			Iterator<MutableNode> mn = element.nodes().iterator();
+			System.out.println("===");
+			while(mn.hasNext()) {
+				MutableNode elementNode = mn.next();
+				System.out.println(elementNode.name());
+				System.out.println("number links: " + elementNode.links().size());
+			}
+			System.out.println("===");
+			System.out.println();
+		}
+		
+		return mutGraph;
 	}
 }

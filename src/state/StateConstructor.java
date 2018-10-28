@@ -111,12 +111,17 @@ public class StateConstructor {
 				System.out.println("=====================================");
 				
 				printTransitionTable(DFA, unedited);
+				
+				stateList =  DFA;
 			}
 			
 			return stateList;
+			
 		}catch(Exception e) {
+			
 			System.out.println("Error: wrong input. Displayign error for more details");
 			e.printStackTrace();
+			
 		}
 		return null;
 	}
