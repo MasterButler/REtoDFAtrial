@@ -50,7 +50,7 @@ public class Driver {
 			State currState = finalList.get(i);
 			
 			MutableGraph currGraph = currState.getGraphVizGraph();
-			System.out.println("ADDING TO FINAL LIST PROPAGATED FROM " + finalList.get(i));
+//			System.out.println("ADDING TO FINAL LIST PROPAGATED FROM " + finalList.get(i));
 			currGraph.addTo(minimized);		
 		}
 		

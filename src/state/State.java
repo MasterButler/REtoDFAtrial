@@ -140,21 +140,21 @@ public class State implements Comparable<State>{
 			System.out.println();
 		}
 		
-		Iterator<MutableGraph> it = mutGraph.graphs().iterator();
-		while(it.hasNext()) {
-			MutableGraph element = it.next();
-			System.out.println(element.name());
-			
-			Iterator<MutableNode> mn = element.nodes().iterator();
-			System.out.println("===");
-			while(mn.hasNext()) {
-				MutableNode elementNode = mn.next();
-				System.out.println(elementNode.name());
-				System.out.println("number links: " + elementNode.links().size());
-			}
-			System.out.println("===");
-			System.out.println();
-		}
+//		Iterator<MutableGraph> it = mutGraph.graphs().iterator();
+//		while(it.hasNext()) {
+//			MutableGraph element = it.next();
+//			System.out.println(element.name());
+//			
+//			Iterator<MutableNode> mn = element.nodes().iterator();
+//			System.out.println("===");
+//			while(mn.hasNext()) {
+//				MutableNode elementNode = mn.next();
+//				System.out.println(elementNode.name());
+//				System.out.println("number links: " + elementNode.links().size());
+//			}
+//			System.out.println("===");
+//			System.out.println();
+//		}
 		
 		return mutGraph;
 	}
