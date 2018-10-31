@@ -8,3 +8,7 @@ target/classes/state/StateConstructor\.class
 target/classes/state/StateList\.class
 
 *.class
+
+output/
+
+example/

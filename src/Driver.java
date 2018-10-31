@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 
+import accepter.StateAccepter;
+import filereader.TextFileReader;
+
 import static guru.nidi.graphviz.model.Factory.*;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.RankDir;
@@ -34,12 +37,7 @@ public class Driver {
         }
     };
 
-	
-	public static void main(String[] args) {
-		
-		String regexInput = forCheckingNumI();
-		StateList finalList = StateConstructor.REtoDFA(regexInput);
-		
+	public static void generateVisualization(String regexInput, StateList finalList) {
 		System.out.println("FINAL LIST: ");
 		StateConstructor.printStateTransitions(finalList);
 		
@@ -61,9 +59,19 @@ public class Driver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	}
+	public static void main(String[] args) {
+		
+		String regexInput = forCheckingNumI();
+		StateList finalList = StateConstructor.REtoDFA(regexInput);
+//		generateVisualization(regexInput, finalList);
+		
+		String toCheck = TextFileReader.read("src/toRead.txt");
+		StateAccepter.getAllAcceptingSubStrings(finalList, toCheck, regexInput);
+//		System.out.println();
 	}
 	
+//	(a|b)*
 	public static String forCheckingNumI() {
 		Scanner sc = new Scanner(System.in);
 		
