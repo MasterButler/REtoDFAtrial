@@ -99,32 +99,32 @@ public class State implements Comparable<State>{
 	
 	public MutableGraph getGraphVizGraph() {
 		MutableNode a = mutNode(this.name);
-		System.out.print(this.name);
+//		System.out.print(this.name);
 		if(isAccepting) {
 			a.add(Shape.DOUBLE_CIRCLE);
-			System.out.println(": Acccepting");
+//			System.out.println(": Acccepting");
 		}else {
 			a.add(Shape.CIRCLE);
-			System.out.println(": Non-acccepting");
+//			System.out.println(": Non-acccepting");
 		}
-		System.out.println();
+//		System.out.println();
 		
 		MutableGraph mutGraph = mutGraph(this.name).setDirected(true);		
 		
 //		StateList connections = new StateList();
 //			connections.addAll(getTransition(key));			
 		for(String key: connectedStates.keySet()) {
-			System.out.println("Adding transition " + key);
+//			System.out.println("Adding transition " + key);
 			State currState = getTransition(key).get(0);
 			MutableNode currNode = mutNode(currState.name);
 			
-			System.out.print(currState.name);
+//			System.out.print(currState.name);
 			if(currState.isAccepting) {			
 				currNode.add(Shape.DOUBLE_CIRCLE);
-				System.out.println(": Acccepting");
+//				System.out.println(": Acccepting");
 			}else {
 				currNode.add(Shape.CIRCLE);
-				System.out.println(": Non-acccepting");
+//				System.out.println(": Non-acccepting");
 			}
 			
 			String label = key;
@@ -137,7 +137,7 @@ public class State implements Comparable<State>{
 			        	a.addLink(to(currNode).with(Label.of(label)))
 			        );
 			g.addTo(mutGraph);
-			System.out.println();
+//			System.out.println();
 		}
 		
 //		Iterator<MutableGraph> it = mutGraph.graphs().iterator();

@@ -46,14 +46,18 @@ public class Driver {
 		 *************************************************/
 		String regexInput = forCheckingNumI();
 		StateList finalList = StateConstructor.REtoDFA(regexInput);
-//		generateVisualization(regexInput, finalList);
+//		try {
+//			generateVisualization(regexInput, finalList);			
+//		}catch(Exception e) {
+//			System.out.println("Unable to generate visualization because of large size.");
+//		}
 		
 		
 		/**************************************************
 		 * TEST THE FILE
 		 *************************************************/
 		int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
-		System.out.println("Location of strings accepted by regex " + regexInput);
+		System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
 		System.out.println();
 		for(int i = 0; i < acceptedSubstrings.length; i++) {
 			int startingIndex = acceptedSubstrings[i][0];
@@ -64,6 +68,7 @@ public class Driver {
 					+ toCheck.substring(endingIndex+1));
 			System.out.println();
 		}
+		System.out.println("-- End of list --");
 	}
 	
     /**
@@ -80,10 +85,10 @@ public class Driver {
             }
         }
     };
-
+    
 	public static void generateVisualization(String regexInput, StateList finalList) {
-		System.out.println("FINAL LIST: ");
-		StateConstructor.printStateTransitions(finalList);
+//		System.out.println("FINAL LIST: ");
+//		StateConstructor.printStateTransitions(finalList);
 		
 		MutableGraph minimized = mutGraph("Minimized DFA for " + regexInput).setDirected(true);
 		
@@ -99,7 +104,7 @@ public class Driver {
 		try {
 			String curr = String.valueOf(System.currentTimeMillis());
 			Graphviz.fromGraph(minimized).height(5000).render(Format.PNG).toFile(new File("output/" + curr + ".png"));
-			System.out.println("DONE");
+//			System.out.println("DONE");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
