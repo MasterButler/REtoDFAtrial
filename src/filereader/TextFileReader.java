@@ -8,15 +8,18 @@ public class TextFileReader{
 	
 	public static String read(String location) {
 		File file = new File(location);
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file)); 
-			  
-			String st; 
-			while ((st = br.readLine()) != null) 
-			    
-			return st;
-		}catch(Exception e) {
-			e.printStackTrace();
+		if(file.exists()) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(file)); 
+				
+				String st; 
+				while ((st = br.readLine()) != null) 
+				return st;
+			}catch(Exception e) {
+				e.printStackTrace();
+			}			
+		}else {
+			System.out.println("File does NOT exist.");
 		}
 		return null;
 	}

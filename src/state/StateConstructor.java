@@ -32,7 +32,7 @@ public class StateConstructor {
 			String toCheck = regexInput;
 			toCheck = toCheck.replaceAll("\\(", "");
 			toCheck = toCheck.replaceAll("\\)", "");
-			System.out.println(toCheck);
+//			System.out.println(toCheck);
 			Pattern p = Pattern.compile("([a-zA-Z0-9|\\s|+*?,.~-]|\\[|\\])*");
 			if(!p.matcher(toCheck).matches()) {
 				System.out.println("You have invalid input characters in your string.");
@@ -51,25 +51,26 @@ public class StateConstructor {
 				stateList.add(forBlank);
 				printTransitionTable(stateList, unedited);
 			}else {
-				System.out.println("ADDING PRECEDENCE MARKERS TO REGEX");
+//				System.out.println("ADDING PRECEDENCE MARKERS TO REGEX");
 				regexInput = addParenthesisPrecedences(regexInput);
 				regexInput = regexInput.replaceAll(" ", "[s]");
-				System.out.println("To solve: " + regexInput);
-				
-				System.out.println("CONVERTING REGEX TO ENFA");
-				StateList eNFA = REtoENFA(regexInput);
-				System.out.println("============================");
-				System.out.println("EPSILON NFA STATE TRANSITION");
-				System.out.println("============================");
-				printStateTransitions(eNFA);
-				System.out.println("ENFA DONE (" + eNFA.size() + " states)");
 				System.out.println();
+				System.out.println("STEP 0: IDENTIFY REGEX (" + regexInput + ")");
+				
+				System.out.println("STEP 1: REGEX TO ENFA");
+				StateList eNFA = REtoENFA(regexInput);
+//				System.out.println("============================");
+//				System.out.println("EPSILON NFA STATE TRANSITION");
+//				System.out.println("============================");
+//				printStateTransitions(eNFA);
+//				System.out.println("ENFA DONE (" + eNFA.size() + " states)");
+//				System.out.println();
 				
 				if(eNFA == null) {
 					return null;
 				}
 				
-				System.out.println("CONVERTING ENFA TO DFA");
+				System.out.println("STEP 2: ENFA TO DFA");
 				StateList DFA = ENFAtoDFA(eNFA);
 				for(int i = 0; i < eNFA.size(); i++) {
 					eNFA.get(i).name = "q" + i;
@@ -81,14 +82,14 @@ public class StateConstructor {
 //				System.out.println("DFA TRANSITION ===============");
 //				System.out.println("==============================");
 //				printStateTransitions(DFA);
-				System.out.println("DFA DONE (" + DFA.size() + " states)");
-				System.out.println();
+//				System.out.println("DFA DONE (" + DFA.size() + " states)");
+//				System.out.println();
 
 				if(DFA == null) {
 					return null;
 				}
 				
-				System.out.println("MINIMIZING DFA");
+				System.out.println("STEP 3: DFA TO MINIMIZED DFA");
 				DFA = minimizeDFA(DFA);
 				for(int i = 0; i < DFA.size(); i++) {
 					DFA.get(i).name = "q" + i;
@@ -97,18 +98,18 @@ public class StateConstructor {
 //				System.out.println("MINIMIZED DFA TRANSITION");
 //				System.out.println("============================");
 //				printStateTransitions(DFA);
-				System.out.println("MINIMIZED DFA DONE (" + DFA.size() + " states)");
-				System.out.println();
+//				System.out.println("MINIMIZED DFA DONE (" + DFA.size() + " states)");
+//				System.out.println();
 				
 				if(DFA == null) {
 					return null;
 				}
 				
-				System.out.println("DFA produced " + DFA.size());
+//				System.out.println("DFA produced " + DFA.size());
 
-				System.out.println("=====================================");
-				System.out.println("FINAL SOLUTION USING minimized DFA (" + DFA.size() + " states)");
-				System.out.println("=====================================");
+				System.out.println("============================");
+				System.out.println("Minimized DFA (" + DFA.size() + " states)");
+				System.out.println("============================");
 				
 				printTransitionTable(DFA, unedited);
 				
@@ -119,7 +120,7 @@ public class StateConstructor {
 			
 		}catch(Exception e) {
 			
-			System.out.println("Error: wrong input. Displayign error for more details");
+			System.out.println("Error: wrong input. Displaying error for more details");
 			e.printStackTrace();
 			
 		}

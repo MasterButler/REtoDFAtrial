@@ -1,26 +1,70 @@
+import static guru.nidi.graphviz.model.Factory.mutGraph;
+
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
+
 import accepter.StateAccepter;
 import filereader.TextFileReader;
-
-import static guru.nidi.graphviz.model.Factory.*;
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.RankDir;
-import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.model.Node;
 import state.State;
 import state.StateConstructor;
 import state.StateList;
 
 public class Driver {
+
+	public static void main(String[] args) {
+
+		/**************************************************
+		 * SELECT THE FILE
+		 *************************************************/
+		String file = "";
+		JFileChooser chooser = new JFileChooser();
+		do {
+			int returnVal = chooser.showOpenDialog(null);
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				chooser.getSelectedFile().getAbsolutePath();
+				file = chooser.getSelectedFile().getAbsolutePath();
+				break;
+			}	    	
+		}while(true);
+		
+		file = new File(file).getAbsolutePath();
+		System.out.println("File to read: " +  file);
+		String toCheck = TextFileReader.read(file);
+		
+		/**************************************************
+		 * GENERATE THE DFA
+		 *************************************************/
+		String regexInput = forCheckingNumI();
+		StateList finalList = StateConstructor.REtoDFA(regexInput);
+//		generateVisualization(regexInput, finalList);
+		
+		
+		/**************************************************
+		 * TEST THE FILE
+		 *************************************************/
+		int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
+		System.out.println("Location of strings accepted by regex " + regexInput);
+		System.out.println();
+		for(int i = 0; i < acceptedSubstrings.length; i++) {
+			int startingIndex = acceptedSubstrings[i][0];
+			int endingIndex = acceptedSubstrings[i][1];
+			System.out.println(startingIndex + " to " + endingIndex);
+			System.out.println(toCheck.substring(0, startingIndex) 
+					+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
+					+ toCheck.substring(endingIndex+1));
+			System.out.println();
+		}
+	}
 	
     /**
      * Load the config.properties file.
@@ -60,30 +104,8 @@ public class Driver {
 			e.printStackTrace();
 		}
 	}
-	public static void main(String[] args) {
-		
-		String regexInput = forCheckingNumI();
-		StateList finalList = StateConstructor.REtoDFA(regexInput);
-//		generateVisualization(regexInput, finalList);
-		
-		String toCheck = TextFileReader.read("src/toRead.txt");
-		int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
-//		
-		System.out.println("Location of strings accepted by regex " + regexInput);
-		System.out.println();
-		for(int i = 0; i < acceptedSubstrings.length; i++) {
-			int startingIndex = acceptedSubstrings[i][0];
-			int endingIndex = acceptedSubstrings[i][1];
-			System.out.println(startingIndex + " to " + endingIndex);
-			System.out.println(toCheck.substring(0, startingIndex) 
-					+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
-					+ toCheck.substring(endingIndex+1));
-			System.out.println();
-		}
-	}
 	
-//	(a|b)*
-	public static String forCheckingNumI() {
+		public static String forCheckingNumI() {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.print("Enter case (~ for epsilon): ");
