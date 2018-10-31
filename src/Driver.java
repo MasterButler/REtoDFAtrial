@@ -67,8 +67,19 @@ public class Driver {
 //		generateVisualization(regexInput, finalList);
 		
 		String toCheck = TextFileReader.read("src/toRead.txt");
-		StateAccepter.getAllAcceptingSubStrings(finalList, toCheck, regexInput);
-//		System.out.println();
+		int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
+//		
+		System.out.println("Location of strings accepted by regex " + regexInput);
+		System.out.println();
+		for(int i = 0; i < acceptedSubstrings.length; i++) {
+			int startingIndex = acceptedSubstrings[i][0];
+			int endingIndex = acceptedSubstrings[i][1];
+			System.out.println(startingIndex + " to " + endingIndex);
+			System.out.println(toCheck.substring(0, startingIndex) 
+					+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
+					+ toCheck.substring(endingIndex+1));
+			System.out.println();
+		}
 	}
 	
 //	(a|b)*

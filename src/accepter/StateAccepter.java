@@ -53,24 +53,31 @@ public class StateAccepter {
 //		System.out.println("LONGEST POSSIBLE: " + longestPossible);
 		return longestPossible;
 	}
-//	(a|b)*
-	
-	public static void getAllAcceptingSubStrings(StateList automata, String textFile, String regex) {
-		System.out.println("Location of strings accepted by regex: " + regex);
-		System.out.println();
+
+	public static int[][] getAllAcceptingSubStrings(StateList automata, String textFile) {
+		
+		int[][] acceptingIndices = new int[textFile.length()][2];
+		int count = 0;
 		for(int i = 0; i < textFile.length(); i++) {
-//			System.out.println("STARTING AT INDEX " + i);
 			int startingIndex = i;
 			int endingIndex = i + getIndexOfLongestAcceptableString(automata, textFile.substring(i));
-//			System.out.println("Starting: " + startingIndex);
-//			System.out.println("Ending  : " + endingIndex);
+			acceptingIndices[i][0] = startingIndex;
+			acceptingIndices[i][1] = endingIndex;
 			if(startingIndex <= endingIndex) {
-//				System.out.println(startingIndex + " to " + endingIndex + "(" + textFile.substring(startingIndex, endingIndex+1) + ")");
-				System.out.println(startingIndex + " to " + endingIndex);
-				System.out.println(textFile.substring(0, startingIndex) + "[" + textFile.substring(startingIndex, endingIndex+1) + "]" + textFile.substring(endingIndex+1));
-				System.out.println();
+				count++;
 			}
 		}
 		
+		int ctr = 0;
+		int[][] finalAcceptingIndices = new int[count][2];
+		for(int i = 0; i < acceptingIndices.length; i++) {
+			if(acceptingIndices[i][0] <= acceptingIndices[i][1]) {
+				finalAcceptingIndices[ctr][0] = acceptingIndices[i][0];
+				finalAcceptingIndices[ctr][1] = acceptingIndices[i][1];
+				ctr++;
+			}
+		}
+		
+		return finalAcceptingIndices;
 	}
 }
