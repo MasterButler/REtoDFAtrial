@@ -12,9 +12,12 @@ public class TextFileReader{
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file)); 
 				
+				String toRet = "";
 				String st; 
-				while ((st = br.readLine()) != null) 
-				return st;
+				while ((st = br.readLine()) != null) {
+					toRet += st + " ";
+				}
+				return toRet;
 			}catch(Exception e) {
 				e.printStackTrace();
 			}			
