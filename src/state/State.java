@@ -98,22 +98,22 @@ public class State implements Comparable<State>{
 	
 	
 	public MutableGraph getGraphVizGraph() {
-		MutableNode a = mutNode(this.name);
-//		System.out.print(this.name);
-		if(isAccepting) {
-			a.add(Shape.DOUBLE_CIRCLE);
-//			System.out.println(": Acccepting");
-		}else {
-			a.add(Shape.CIRCLE);
-//			System.out.println(": Non-acccepting");
-		}
-//		System.out.println();
-		
 		MutableGraph mutGraph = mutGraph(this.name).setDirected(true);		
 		
 //		StateList connections = new StateList();
 //			connections.addAll(getTransition(key));			
 		for(String key: connectedStates.keySet()) {
+			MutableNode a = mutNode(this.name);
+//			System.out.print(this.name);
+			if(isAccepting) {
+				a.add(Shape.DOUBLE_CIRCLE);
+//				System.out.println(": Acccepting");
+			}else {
+				a.add(Shape.CIRCLE);
+//				System.out.println(": Non-acccepting");
+			}
+//			System.out.println();
+			
 //			System.out.println("Adding transition " + key);
 			State currState = getTransition(key).get(0);
 			MutableNode currNode = mutNode(currState.name);
