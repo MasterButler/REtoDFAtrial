@@ -11,6 +11,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import accepter.StateAccepter;
 import filereader.TextFileReader;
@@ -58,9 +60,20 @@ public class Driver {
 			String filename = generateVisualization(regexInput, finalList);
 			
 			JFrame frame = new JFrame();
+			
+			
 			ImageIcon icon = new ImageIcon(filename);
 			JLabel label = new JLabel(icon);
-			frame.add(label);
+			
+			JPanel figPanel = new JPanel();
+			figPanel.add(label);
+			figPanel.setBackground(Color.WHITE);
+			
+			JScrollPane scroller = new JScrollPane(figPanel);
+			scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			
+			frame.add(scroller);
 			frame.setTitle("DFA for regular expression " + regexInput);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.getContentPane().setBackground(Color.WHITE);

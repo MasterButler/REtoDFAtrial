@@ -15,7 +15,7 @@ public class TextFileReader{
 				String toRet = "";
 				String st; 
 				while ((st = br.readLine()) != null) {
-					toRet += st + " ";
+					toRet += st + "\n";
 				}
 				return toRet;
 			}catch(Exception e) {
