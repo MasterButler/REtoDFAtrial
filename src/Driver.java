@@ -79,30 +79,32 @@ public class Driver {
 			frame.getContentPane().setBackground(Color.WHITE);
 			frame.pack();
 			frame.setVisible(true);
+			
+			/**************************************************
+			 * TEST THE FILE
+			 *************************************************/
+			int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
+			if(acceptedSubstrings.length > 0) {			
+				System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
+				System.out.println();
+				for(int i = 0; i < acceptedSubstrings.length; i++) {
+					int startingIndex = acceptedSubstrings[i][0];
+					int endingIndex = acceptedSubstrings[i][1];
+					System.out.println(startingIndex + " to " + endingIndex);
+					System.out.println(toCheck.substring(0, startingIndex) 
+							+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
+							+ toCheck.substring(endingIndex+1));
+					System.out.println();
+				}
+				System.out.println("-- End of list --");
+			}else {
+				System.out.println("No accepted subsequences in string.");
+			}
 		}catch(Exception e) {
 			System.out.println("Unable to generate visualization because of large size.");
 		}
 		
-		/**************************************************
-		 * TEST THE FILE
-		 *************************************************/
-		int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
-		if(acceptedSubstrings.length > 0) {			
-			System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
-			System.out.println();
-			for(int i = 0; i < acceptedSubstrings.length; i++) {
-				int startingIndex = acceptedSubstrings[i][0];
-				int endingIndex = acceptedSubstrings[i][1];
-				System.out.println(startingIndex + " to " + endingIndex);
-				System.out.println(toCheck.substring(0, startingIndex) 
-						+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
-						+ toCheck.substring(endingIndex+1));
-				System.out.println();
-			}
-			System.out.println("-- End of list --");
-		}else {
-			System.out.println("No accepted subsequences in string.");
-		}
+		
 	}
 	
     /**
