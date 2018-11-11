@@ -90,7 +90,11 @@ public class Driver {
 			frame.getContentPane().setBackground(Color.WHITE);
 			frame.pack();
 			frame.setVisible(true);
-			
+		}catch(Exception e) {
+			System.out.println("Unable to generate visualization because of large size.");
+		}
+		
+		if(finalList != null) {			
 			/**************************************************
 			 * TEST THE FILE
 			 *************************************************/
