@@ -57,8 +57,15 @@ public class StateConstructor {
 				System.out.println();
 				System.out.println("STEP 0: IDENTIFY REGEX (" + regexInput + ")");
 				
+				NanoTimer timer = new NanoTimer();
+				
 				System.out.println("STEP 1: REGEX TO ENFA");
+				timer.start();
 				StateList eNFA = REtoENFA(regexInput);
+				timer.stop();
+				
+				System.out.println("RE to eNFA took " + timer.getFormattedTimeLapsed());
+				timer.reset();
 //				System.out.println("============================");
 //				System.out.println("EPSILON NFA STATE TRANSITION");
 //				System.out.println("============================");
@@ -71,6 +78,7 @@ public class StateConstructor {
 				}
 				
 				System.out.println("STEP 2: ENFA TO DFA");
+				timer.start();
 				StateList DFA = ENFAtoDFA(eNFA);
 				for(int i = 0; i < eNFA.size(); i++) {
 					eNFA.get(i).name = "q" + i;
@@ -78,6 +86,10 @@ public class StateConstructor {
 				for(int i = 0; i < DFA.size(); i++) {
 					DFA.get(i).name = "q" + i;
 				}
+				timer.stop();
+				
+				System.out.println("eNFA to DFA took " + timer.getFormattedTimeLapsed());
+				timer.reset();
 //				System.out.println("==============================");
 //				System.out.println("DFA TRANSITION ===============");
 //				System.out.println("==============================");
@@ -90,10 +102,15 @@ public class StateConstructor {
 				}
 				
 				System.out.println("STEP 3: DFA TO MINIMIZED DFA");
+				timer.start();
 				DFA = minimizeDFA(DFA);
 				for(int i = 0; i < DFA.size(); i++) {
 					DFA.get(i).name = "q" + i;
 				}
+				timer.stop();
+				
+				System.out.println("DFA minimization took " + timer.getFormattedTimeLapsed());
+				timer.reset();
 //				System.out.println("============================");
 //				System.out.println("MINIMIZED DFA TRANSITION");
 //				System.out.println("============================");

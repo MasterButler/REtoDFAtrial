@@ -46,6 +46,9 @@ public class Driver {
 	
 	public static void main(String[] args) {
 
+		NanoTimer timer = new NanoTimer();
+		NanoTimer totalTimer = new NanoTimer();
+		
 		/**************************************************
 		 * SELECT THE FILE
 		 *************************************************/
@@ -54,10 +57,18 @@ public class Driver {
 		/**************************************************
 		 * GENERATE THE DFA
 		 *************************************************/
+		
+		totalTimer.start();
+		
 		String regexInput = forCheckingNumI();
 		StateList finalList = StateConstructor.REtoDFA(regexInput);
 		try {
+			timer.start();
 			String filename = generateVisualization(regexInput, finalList);
+			timer.stop();
+			
+			System.out.println("Visualization Generation took " + timer.getFormattedTimeLapsed());
+			timer.reset();
 			
 			JFrame frame = new JFrame();
 			
@@ -83,6 +94,7 @@ public class Driver {
 			/**************************************************
 			 * TEST THE FILE
 			 *************************************************/
+			timer.start();
 			int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
 			if(acceptedSubstrings.length > 0) {			
 				System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
@@ -100,10 +112,18 @@ public class Driver {
 			}else {
 				System.out.println("No accepted subsequences in string.");
 			}
+			timer.stop();
+			
+			System.out.println("Substring Tester took " + timer.getFormattedTimeLapsed());
+			timer.reset();
 		}catch(Exception e) {
 			System.out.println("Unable to generate visualization because of large size.");
 		}
 		
+		totalTimer.stop();
+		
+		System.out.println("Whole process took " + timer.getFormattedTimeLapsed());
+		totalTimer.reset();
 		
 	}
 	
