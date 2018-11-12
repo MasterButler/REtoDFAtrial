@@ -120,8 +120,6 @@ public class Driver {
 			
 			System.out.println("Substring Tester took " + timer.getFormattedTimeLapsed());
 			timer.reset();
-		}catch(Exception e) {
-			System.out.println("Unable to generate visualization because of large size.");
 		}
 		
 		totalTimer.stop();
