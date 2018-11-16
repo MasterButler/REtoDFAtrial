@@ -33,7 +33,8 @@ public class StateConstructor {
 			toCheck = toCheck.replaceAll("\\(", "");
 			toCheck = toCheck.replaceAll("\\)", "");
 //			System.out.println(toCheck);
-			Pattern p = Pattern.compile("([a-zA-Z0-9|\\s|+*?,.~-]|\\[|\\])*");
+//			Pattern p = Pattern.compile("([a-zA-Z0-9|\\s|+*?,.~-]|\\[|\\])*");
+			Pattern p = Pattern.compile("([a-zA-Z0-9|\\s|$&+,:;=?@#\\\\|'\"<>.^*()/%!_{}\\-`~]|\\[|\\])*");
 			if(!p.matcher(toCheck).matches()) {
 				System.out.println("You have invalid input characters in your string.");
 				return null;
