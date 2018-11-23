@@ -464,6 +464,7 @@ public class StateConstructor {
 //				System.out.println("KEYS AVAILABLE: ");
 				for(String key: currMap.keySet()) {
 //					System.out.println(key);
+//					System.out.println("KEY: " + key);
 					if(key.length() > 1) {
 						String rootStateNumber = currState.substring(1) + ".";
 						
@@ -606,26 +607,83 @@ public class StateConstructor {
 					
 					from = new State("q" + rootState + state + "0");
 					to = new State("q" + rootState + state + "1");
-					if(transitionInput.contains("[")) {
-						ArrayList<String> transitionList = new ArrayList<String>();
-						if( transitionInput.contains("a-z") ) {
-							transitionList.addAll(getLowerCaseSet());
-						}
-						if( transitionInput.contains("A-Z") ) {
-							transitionList.addAll(getUpperCaseSet());
-						}
-						if( transitionInput.contains("0-9") ) {
-							transitionList.addAll(getNumberSet());
-						}
-						if( transitionInput.contains("s")) {
-							transitionList.add(" ");
-						}
-						for(int tl = 0; tl < transitionList.size(); tl++) {
-							from.setTransition(transitionList.get(tl), to);
-						}
-					}else {
-						from.setTransition(transitionInput, to);						
-					}
+					
+//					ArrayList<String> transitionList = new ArrayList<String>();
+//					
+//					while(transitionInput.length() > 0) {
+//						System.out.println(transitionInput + " remaining");
+//						char currSymbol = transitionInput.charAt(0);
+//						
+//						if(currSymbol == '[') {
+//							String grouped = "";
+//							
+//							// skip the '[' 
+//							transitionInput = transitionInput.substring(1);
+//							
+//							while(transitionInput.charAt(0) != ']') {
+//								grouped += transitionInput.charAt(0);
+//								transitionInput = transitionInput.substring(1);
+//							}
+//							
+//							//skip the ']'
+//							transitionInput = transitionInput.substring(1);
+//							
+//							if( grouped.contains("a-z") ) {
+//								transitionList.addAll(getLowerCaseSet());
+//							}
+//							if( grouped.contains("A-Z") ) {
+//								transitionList.addAll(getUpperCaseSet());
+//							}
+//							if( grouped.contains("0-9") ) {
+//								transitionList.addAll(getNumberSet());
+//							}
+//							if( grouped.contains("s")) {
+//								transitionList.add(" ");
+//							}
+//						}else {
+//							transitionList.add(String.valueOf(currSymbol));
+//							transitionInput = transitionInput.substring(1);
+//						}
+//					}
+
+//					System.out.print("Setting transitions: ");
+//					for(int tl = 0; tl < transitionList.size(); tl++) {
+//						System.out.print(transitionList.get(tl) + " ");
+//						from.setTransition(transitionList.get(tl), to);
+//					}
+					
+					System.out.println("TRANSITION INPUT DETECTED: " + transitionInput);
+					
+					transitionInput = transitionInput.replaceAll("\\[a-z\\]", getLowerCaseSetString());
+					transitionInput = transitionInput.replaceAll("\\[A-Z\\]", getUpperCaseSetString());
+					transitionInput = transitionInput.replaceAll("\\[0-9\\]", getNumberSetString());
+					
+					System.out.println("Setting transition: " + transitionInput);
+					from.setTransition(transitionInput, to);
+					
+//					if(transitionInput.contains("[")) {
+//						ArrayList<String> transitionList = new ArrayList<String>();
+//						if( transitionInput.contains("[a-z]") ) {
+//							transitionList.addAll(getLowerCaseSet());
+//						}
+//						if( transitionInput.contains("[A-Z]") ) {
+//							transitionList.addAll(getUpperCaseSet());
+//						}
+//						if( transitionInput.contains("[0-9]") ) {
+//							transitionList.addAll(getNumberSet());
+//						}
+//						if( transitionInput.contains("[s]")) {
+//							transitionList.add(" ");
+//						}
+//						System.out.print("Setting transitions: ");
+//						for(int tl = 0; tl < transitionList.size(); tl++) {
+//							System.out.print(transitionList.get(tl) + " ");
+//							from.setTransition(transitionList.get(tl), to);
+//						}
+//					}else {
+//						System.out.println("Setting transition: " + transitionInput);
+//						from.setTransition(transitionInput, to);						
+//					}
 					
 					epsilonStart.setTransition(STR_EPSILON, from);
 					
@@ -945,6 +1003,46 @@ public class StateConstructor {
 		
 	}
 
+	public static String getLowerCaseSetString(){
+		String toReturn = "(";
+		for(char a = 'a'; a <= 'z'; a++) {
+			toReturn += a;
+			if(a != 'z') {
+				toReturn += '|';
+			}
+		}
+		toReturn += ')';
+		return toReturn;
+	}
+	
+	public static String getUpperCaseSetString(){
+		String toReturn = "(";
+		for(char a = 'A'; a <= 'Z'; a++) {
+			toReturn += a;
+			if(a != 'Z') {
+				toReturn += '|';
+			}
+		}
+		toReturn += ')';
+//		System.out.println("Replacing with: " + toReturn);
+		return toReturn;
+	}
+	
+	public static String getNumberSetString(){
+		String toReturn = "(";
+		for(char a = '0'; a <= '9'; a++) {
+			toReturn += a;
+			if(a != '9') {
+				toReturn += '|';
+			}
+		}
+		toReturn += ')';
+		return toReturn;
+	}
+	
+	
+	
+	@Deprecated
 	public static ArrayList<String> getLowerCaseSet(){
 		ArrayList<String> lowerSet = new ArrayList<>();
 		for(char a = 'a'; a <= 'z'; a++) {
@@ -954,6 +1052,7 @@ public class StateConstructor {
 		return lowerSet;
 	}
 	
+	@Deprecated
 	public static ArrayList<String> getUpperCaseSet(){
 		ArrayList<String> upperSet = new ArrayList<>();
 		for(char a = 'A'; a <= 'Z'; a++) { 	
@@ -963,6 +1062,7 @@ public class StateConstructor {
 		return upperSet;
 	}
 	
+	@Deprecated
 	public static ArrayList<String> getNumberSet(){
 		ArrayList<String> numberSet = new ArrayList<>();
 		for(char a = '0'; a <= '9'; a++) {
