@@ -37,20 +37,22 @@ public class StateAccepter {
 	}
 	
 	public static int getIndexOfLongestAcceptableString(StateList automata, String input) {
-		State currState = automata.get(automata.getStartingStateIndices().get(0));
-		
 		int longestPossible = -1;
-		for(int j = 0; j < input.length(); j++) {
-			currState = getNextTransition(currState, String.valueOf(input.charAt(j)));
-			if(currState == null) {
+		if(automata.getStartingStateIndices().size() > 0){
+			State currState = automata.get(automata.getStartingStateIndices().get(0));
+			
+			for(int j = 0; j < input.length(); j++) {
+				currState = getNextTransition(currState, String.valueOf(input.charAt(j)));
+				if(currState == null) {
 //				System.out.println("HALT POSSIBLE: " + longestPossible);
-				return longestPossible;
-			}else if(currState.isAccepting == true) {
+					return longestPossible;
+				}else if(currState.isAccepting == true) {
 //				System.out.println("FOUND");
-				longestPossible = j;
+					longestPossible = j;
+				}
 			}
-		}
 //		System.out.println("LONGEST POSSIBLE: " + longestPossible);
+		}
 		return longestPossible;
 	}
 

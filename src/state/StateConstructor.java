@@ -43,7 +43,7 @@ public class StateConstructor {
 			StateList stateList = new StateList();
 			
 			String unedited = regexInput;
-			if(toCheck.trim().equals("")) {
+			if(toCheck.equals("")) {
 				System.out.println("Blank input");
 				State forBlank = new State("s0");
 				forBlank.isAccepting = true;
@@ -66,6 +66,7 @@ public class StateConstructor {
 				timer.stop();
 				
 				System.out.println("RE to eNFA took " + timer.getFormattedTimeLapsed());
+				System.out.println("eNFA state count: " + eNFA.size());
 				timer.reset();
 //				System.out.println("============================");
 //				System.out.println("EPSILON NFA STATE TRANSITION");
@@ -90,6 +91,7 @@ public class StateConstructor {
 				timer.stop();
 				
 				System.out.println("eNFA to DFA took " + timer.getFormattedTimeLapsed());
+				System.out.println("DFA state count: " + DFA.size());
 				timer.reset();
 //				System.out.println("==============================");
 //				System.out.println("DFA TRANSITION ===============");
@@ -455,6 +457,8 @@ public class StateConstructor {
 			while(!isAllChecked) {
 //				System.out.println("==" + i + "==");
 				if(i == stateList.size()-1) {
+					System.out.println("i is: " + i);
+					System.out.println("statelist size is: " + stateList.size());
 					isAllChecked = true;
 				}
 				String currState = stateList.get(i).name;
@@ -470,23 +474,25 @@ public class StateConstructor {
 //						System.out.println("EDITING " + currState + "WITH INPUT " + key);
 //						System.out.println("EDITED STATE NO: " + rootStateNumber);
 //						System.out.println("EDITED KEY     : " + key.substring(1, key.length()-1));
-						
-						StateList newStates = construct( key.substring(1, key.length()-1), rootStateNumber ); 
-						
+						System.out.println("Now checking " + key.substring(1, key.length()-1));
+						if(key.substring(1, key.length()-1).equals("")) {							
+							StateList newStates = construct( key.substring(1, key.length()-1), rootStateNumber ); 
+							
 //						System.out.println("REROUTING");
 //						printStateTransitions(newStates);						
-						stateList.addAll(newStates);
+							stateList.addAll(newStates);
 //						System.out.println("END OF NEW STATE");
-
-						
-						// connect to start of new set
-						stateList.get(i).setTransition(STR_EPSILON, newStates.get(newStates.getStartingStateIndex()));
-						// connect to end of new set
-						newStates.get(newStates.getEndingStateIndex()).setTransition(STR_EPSILON, stateList.get(i).getTransition(key));
-						
-						// sever connection of previously connected complicated nodes
-						stateList.get(i).removeTransitionWithInputOf(key);
-						
+							
+							
+							// connect to start of new set
+							stateList.get(i).setTransition(STR_EPSILON, newStates.get(newStates.getStartingStateIndex()));
+							// connect to end of new set
+							newStates.get(newStates.getEndingStateIndex()).setTransition(STR_EPSILON, stateList.get(i).getTransition(key));
+							
+							// sever connection of previously connected complicated nodes
+							stateList.get(i).removeTransitionWithInputOf(key);
+							
+						}
 						// restart the check
 						i = 0;
 						isAllChecked = false;
@@ -522,7 +528,9 @@ public class StateConstructor {
 
 		
 		try {
+			System.out.println("NOW READING: " + regex);
 			while(!regex.isEmpty()) {
+				System.out.println("Remaining: '" + regex + "'");
 //				System.out.println("STARTING");
 				
 				// the OR case (e.g. a | b)
@@ -550,20 +558,27 @@ public class StateConstructor {
 				}
 				// the simple character case (alphanumerics)
 				else {
-//					System.out.println("FIRST ALPHA NUMERIC");
-					
-					if(regex.charAt(0) == '(') {
+					System.out.println("FIRST ALPHA NUMERIC");
+					System.out.println(regex);
+					if(regex.charAt(0) == '\\'){
+						regex = regex.substring(1);
+						transitionInput = regex.charAt(0) + "";
+						regex = regex.substring(1);
+					}else if(regex.charAt(0) == '(') {
 						LinkedList<Character> inputStack = new LinkedList<Character>();
 						
 //						System.out.println("TRYING here");
 						String toCheck = regex;
 						
-						transitionInput = toCheck.charAt(0) + "";
+						transitionInput = "";
+//						transitionInput = toCheck.charAt(0) + "";
 						
-						inputStack.add(toCheck.charAt(0));
-						toCheck = toCheck.substring(1);
+//						inputStack.add(toCheck.charAt(0));
+//						toCheck = toCheck.substring(1);
 						
-						while(inputStack.size() > 0) {
+						do {
+							System.out.println(toCheck);
+//						while(inputStack.size() > 0) {
 							
 							if(toCheck.charAt(0) == '(') {
 								inputStack.add(toCheck.charAt(0));
@@ -574,7 +589,9 @@ public class StateConstructor {
 							transitionInput += toCheck.charAt(0);
 							toCheck = toCheck.substring(1);
 							
-						}
+						}while(inputStack.size() > 0);
+						
+						System.out.println("FORMED: " + transitionInput);
 //						System.out.println("REGEX: " + regex);
 //						System.out.println("TRANS: " + transitionInput);
 //						System.out.println("LEN OF TRANSITION OUTPUT:");
@@ -587,6 +604,7 @@ public class StateConstructor {
 							regex = regex.substring(1);
 						}
 						transitionInput = groupedClass;
+						System.out.println("REGEX IS NOW: " + regex);
 					}else {
 						transitionInput = regex.charAt(0) + "";
 						regex = regex.substring(1);
@@ -602,27 +620,46 @@ public class StateConstructor {
 					
 					from = new State("q" + rootState + state + "0");
 					to = new State("q" + rootState + state + "1");
-					if(transitionInput.contains("[")) {
-						ArrayList<String> transitionList = new ArrayList<String>();
-						if( transitionInput.contains("a-z") ) {
-							transitionList.addAll(getLowerCaseSet());
-						}
-						if( transitionInput.contains("A-Z") ) {
-							transitionList.addAll(getUpperCaseSet());
-						}
-						if( transitionInput.contains("0-9") ) {
-							transitionList.addAll(getNumberSet());
-						}
-						if( transitionInput.contains("s")) {
-							transitionList.add(" ");
-						}
-						for(int tl = 0; tl < transitionList.size(); tl++) {
-							from.setTransition(transitionList.get(tl), to);
-						}
-					}else {
-						from.setTransition(transitionInput, to);						
-					}
 					
+					System.out.println("TO INTEPRET: " + transitionInput);
+					ArrayList<String> transitionList = new ArrayList<String>();
+			        while(transitionInput.length() > 0){
+			            char toSet = transitionInput.charAt(0);
+			            System.out.println("READING:" + toSet);
+			            if(toSet == '['){
+			                String sets = transitionInput.substring( 0, transitionInput.indexOf(']')+1 );
+							
+
+							if( transitionInput.contains("a-z") ) {
+								transitionList.addAll(getLowerCaseSet());
+							}
+							if( transitionInput.contains("A-Z") ) {
+								transitionList.addAll(getUpperCaseSet());
+							}
+							if( transitionInput.contains("0-9") ) {
+								transitionList.addAll(getNumberSet());
+							}
+							if( transitionInput.contains("s")) {
+								transitionList.add(" ");
+							}
+
+							System.out.println(transitionInput.indexOf(']'));
+//							System.out.println("sets is now: " + sets);
+//							System.out.println("REMOVING 0 to " + sets.length());
+							transitionInput = transitionInput.substring(sets.length());
+//							System.out.println("REMAINING (after []): " + transitionInput);
+			            }else{
+			            	transitionList.add(transitionInput);
+			                transitionInput = transitionInput.substring(1);
+			            }
+			            
+//			            System.out.println("REMAINING: " + transitionInput);
+			        }
+			        System.out.println("NOW CONVERTING INPUTS INTO LIST OF AVAILABLE TRANSITIONS");
+					for(int tl = 0; tl < transitionList.size(); tl++) {
+						from.setTransition(transitionList.get(tl), to);
+					}
+
 					epsilonStart.setTransition(STR_EPSILON, from);
 					
 					if(!hasOR) {
