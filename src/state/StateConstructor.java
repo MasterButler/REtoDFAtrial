@@ -54,7 +54,7 @@ public class StateConstructor {
 			}else {
 //				System.out.println("ADDING PRECEDENCE MARKERS TO REGEX");
 				regexInput = addParenthesisPrecedences(regexInput);
-				regexInput = regexInput.replaceAll(" ", "[s]");
+//				regexInput = regexInput.replaceAll(" ", "[s]");
 				System.out.println();
 				System.out.println("STEP 0: IDENTIFY REGEX (" + regexInput + ")");
 				
@@ -552,7 +552,11 @@ public class StateConstructor {
 				else {
 //					System.out.println("FIRST ALPHA NUMERIC");
 					
-					if(regex.charAt(0) == '(') {
+					if(regex.charAt(0) == '\\'){
+						regex = regex.substring(1);
+						transitionInput = regex.charAt(0) + "";
+						regex = regex.substring(1);
+					}else if(regex.charAt(0) == '(') {
 						LinkedList<Character> inputStack = new LinkedList<Character>();
 						
 //						System.out.println("TRYING here");
