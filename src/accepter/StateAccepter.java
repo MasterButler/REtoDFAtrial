@@ -3,6 +3,7 @@ package accepter;
 import java.util.ArrayList;
 
 import state.State;
+import state.StateConstructor;
 import state.StateList;
 
 public class StateAccepter {
@@ -57,20 +58,46 @@ public class StateAccepter {
 	}
 
 	public static int[][] getAllAcceptingSubStrings(StateList automata, String textFile) {
-		
+
 		int[][] acceptingIndices = new int[textFile.length()][2];
 		int count = 0;
-		for(int i = 0; i < textFile.length(); i++) {
-			int startingIndex = i;
-			int endingIndex = i + getIndexOfLongestAcceptableString(automata, textFile.substring(i));
-			acceptingIndices[i][0] = startingIndex;
-			acceptingIndices[i][1] = endingIndex;
-			if(startingIndex <= endingIndex) {
-				count++;
+		
+		if(textFile.length() == 0) {
+			if(automata.size() ==  1) {
+				State currState = getNextTransition(automata.get(0), "");
+				if(currState == null) {
+					currState = getNextTransition(automata.get(0), StateConstructor.STR_EPSILON);
+					if(currState != null) {
+						if(currState.isAccepting) {
+							acceptingIndices = new int[1][2];
+							acceptingIndices[0][0] = 0;
+							acceptingIndices[0][1] = 0;
+							count++;	
+						}	
+					}
+				}else {
+					if(currState.isAccepting) {
+						acceptingIndices = new int[1][2];
+						acceptingIndices[0][0] = 0;
+						acceptingIndices[0][1] = 0;
+						count++;	
+					}
+				}
 			}
+		}else {
+			for(int i = 0; i < textFile.length(); i++) {
+				int startingIndex = i;
+				int endingIndex = i + getIndexOfLongestAcceptableString(automata, textFile.substring(i));
+				acceptingIndices[i][0] = startingIndex;
+				acceptingIndices[i][1] = endingIndex;
+				if(startingIndex <= endingIndex) {
+					count++;
+				}
+			}	
 		}
 		
 		int ctr = 0;
+		
 		int[][] finalAcceptingIndices = new int[count][2];
 		for(int i = 0; i < acceptingIndices.length; i++) {
 			if(acceptingIndices[i][0] <= acceptingIndices[i][1]) {

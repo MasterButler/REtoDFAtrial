@@ -26,106 +26,115 @@ import state.StateList;
 public class Driver {
 
 	public static String selectFile() {
-		String file = "";
-		JFileChooser chooser = new JFileChooser();
-		do {
-			int returnVal = chooser.showOpenDialog(null);
-			if(returnVal == JFileChooser.APPROVE_OPTION) {
-				chooser.getSelectedFile().getAbsolutePath();
-				file = chooser.getSelectedFile().getAbsolutePath();
-				break;
-			}	    	
-		}while(true);
-		
-		file = new File(file).getAbsolutePath();
-		System.out.println("File to read: " +  file);
-		
+//		String file = "";
+//		JFileChooser chooser = new JFileChooser();
+//		do {
+//			int returnVal = chooser.showOpenDialog(null);
+//			if(returnVal == JFileChooser.APPROVE_OPTION) {
+//				chooser.getSelectedFile().getAbsolutePath();
+//				file = chooser.getSelectedFile().getAbsolutePath();
+//				break;
+//			}	    	
+//		}while(true);
+//		
+//		file = new File(file).getAbsolutePath();
+//		System.out.println("File to read: " +  file);
+		String file = "/Users/kylesantos/Desktop/test.txt";
 		return TextFileReader.read(file);
 	}
 	
 	
 	public static void main(String[] args) {
-		PhoneNumberFilterer.start();
-//		NanoTimer timer = new NanoTimer();
-//		NanoTimer totalTimer = new NanoTimer();
-//		
-//		/**************************************************
-//		 * SELECT THE FILE
-//		 *************************************************/
-//		String toCheck = selectFile();
-//		
-//		/**************************************************
-//		 * GENERATE THE DFA
-//		 *************************************************/
-//		
-//		totalTimer.start();
-//		
-//		String regexInput = forCheckingNumI();
-//		StateList finalList = StateConstructor.REtoDFA(regexInput);
-//		try {
-//			timer.start();
-//			String filename = generateVisualization(regexInput, finalList);
-//			timer.stop();
-//			
-//			System.out.println("Visualization Generation took " + timer.getFormattedTimeLapsed());
-//			timer.reset();
-//			
-//			JFrame frame = new JFrame();
-//			
-//			
-//			ImageIcon icon = new ImageIcon(filename);
-//			JLabel label = new JLabel(icon);
-//			
-//			JPanel figPanel = new JPanel();
-//			figPanel.add(label);
-//			figPanel.setBackground(Color.WHITE);
-//			
-//			JScrollPane scroller = new JScrollPane(figPanel);
-//			scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//			scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//			
-//			frame.add(scroller);
-//			frame.setTitle("DFA for regular expression " + regexInput);
-//			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//			frame.getContentPane().setBackground(Color.WHITE);
-//			frame.pack();
-//			frame.setVisible(true);
-//		}catch(Exception e) {
-//			System.out.println("Unable to generate visualization because of large size.");
-//		}
-//		
-//		if(finalList != null) {			
-//			/**************************************************
-//			 * TEST THE FILE
-//			 *************************************************/
-//			timer.start();
-//			int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
-//			if(acceptedSubstrings.length > 0) {			
-//				System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
-//				System.out.println();
-//				for(int i = 0; i < acceptedSubstrings.length; i++) {
-//					int startingIndex = acceptedSubstrings[i][0];
-//					int endingIndex = acceptedSubstrings[i][1];
-//					System.out.println(startingIndex + " to " + endingIndex);
-//					System.out.println(toCheck.substring(0, startingIndex) 
-//							+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
-//							+ toCheck.substring(endingIndex+1));
-//					System.out.println();
-//				}
-//				System.out.println("-- End of list --");
-//			}else {
-//				System.out.println("No accepted subsequences in string.");
-//			}
-//			timer.stop();
-//			
-//			System.out.println("Substring Tester took " + timer.getFormattedTimeLapsed());
-//			timer.reset();
-//		}
-//		
-//		totalTimer.stop();
-//		
-//		System.out.println("Whole process took " + timer.getFormattedTimeLapsed());
-//		totalTimer.reset();
+//		PhoneNumberFilterer.start();
+		NanoTimer timer = new NanoTimer();
+		NanoTimer totalTimer = new NanoTimer();
+		
+		/**************************************************
+		 * SELECT THE FILE
+		 *************************************************/
+		String toCheck = selectFile();
+//		String toCheck = "";
+		
+		/**************************************************
+		 * GENERATE THE DFA
+		 *************************************************/
+		
+		totalTimer.start();
+		
+		String regexInput = forCheckingNumI();
+		StateList finalList = StateConstructor.REtoDFA(regexInput);
+		try {
+			timer.start();
+			String filename = generateVisualization(regexInput, finalList);
+			timer.stop();
+			
+			System.out.println("Visualization Generation took " + timer.getFormattedTimeLapsed());
+			timer.reset();
+			
+			JFrame frame = new JFrame();
+			
+			
+			ImageIcon icon = new ImageIcon(filename);
+			JLabel label = new JLabel(icon);
+			
+			JPanel figPanel = new JPanel();
+			figPanel.add(label);
+			figPanel.setBackground(Color.WHITE);
+			
+			JScrollPane scroller = new JScrollPane(figPanel);
+			scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			
+			frame.add(scroller);
+			frame.setTitle("DFA for regular expression " + regexInput);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().setBackground(Color.WHITE);
+			frame.pack();
+			frame.setVisible(true);
+		}catch(Exception e) {
+			System.out.println("Unable to generate visualization because of large size.");
+		}
+		
+		if(finalList != null) {			
+			/**************************************************
+			 * TEST THE FILE
+			 *************************************************/
+			timer.start();
+			int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
+			if(acceptedSubstrings.length > 0) {			
+				System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
+				System.out.println();
+				if(toCheck.length() == 0) {
+					int startingIndex = acceptedSubstrings[0][0];
+					int endingIndex = acceptedSubstrings[0][1];
+					System.out.println(startingIndex + " to " + endingIndex);
+					System.out.println("Empty text file was accepted.");
+				}else {
+					for(int i = 0; i < acceptedSubstrings.length; i++) {
+						int startingIndex = acceptedSubstrings[i][0];
+						int endingIndex = acceptedSubstrings[i][1];
+						System.out.println(startingIndex + " to " + endingIndex);
+						System.out.println(toCheck.substring(0, startingIndex) 
+								+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
+								+ toCheck.substring(endingIndex+1));
+						System.out.println();
+					}	
+				}
+				
+				System.out.println("-- End of list --");
+			}else {
+				System.out.println("No accepted subsequences in string.");
+			}
+			timer.stop();
+			
+			System.out.println("Substring Tester took " + timer.getFormattedTimeLapsed());
+			timer.reset();
+		}
+		
+		totalTimer.stop();
+		
+		System.out.println("Whole process took " + timer.getFormattedTimeLapsed());
+		totalTimer.reset();
 		
 	}
 	
