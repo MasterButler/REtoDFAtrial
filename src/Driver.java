@@ -26,26 +26,24 @@ import state.StateList;
 public class Driver {
 
 	public static String selectFile() {
-//		String file = "";
-//		JFileChooser chooser = new JFileChooser();
-//		do {
-//			int returnVal = chooser.showOpenDialog(null);
-//			if(returnVal == JFileChooser.APPROVE_OPTION) {
-//				chooser.getSelectedFile().getAbsolutePath();
-//				file = chooser.getSelectedFile().getAbsolutePath();
-//				break;
-//			}	    	
-//		}while(true);
-//		
-//		file = new File(file).getAbsolutePath();
-//		System.out.println("File to read: " +  file);
-		String file = "/Users/kylesantos/Desktop/test.txt";
+		String file = "";
+		JFileChooser chooser = new JFileChooser();
+		do {
+			int returnVal = chooser.showOpenDialog(null);
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				chooser.getSelectedFile().getAbsolutePath();
+				file = chooser.getSelectedFile().getAbsolutePath();
+				break;
+			}	    	
+		}while(true);
+		
+		file = new File(file).getAbsolutePath();
+		System.out.println("File to read: " +  file);
+//		String file = "/Users/kylesantos/Desktop/test.txt";
 		return TextFileReader.read(file);
 	}
 	
-	
-	public static void main(String[] args) {
-//		PhoneNumberFilterer.start();
+	public static void start() {
 		NanoTimer timer = new NanoTimer();
 		NanoTimer totalTimer = new NanoTimer();
 		
@@ -136,6 +134,11 @@ public class Driver {
 		System.out.println("Whole process took " + timer.getFormattedTimeLapsed());
 		totalTimer.reset();
 		
+	}
+	
+	public static void main(String[] args) {
+//		PhoneNumberFilterer.start();
+		start();
 	}
 	
     /**

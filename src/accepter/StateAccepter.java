@@ -6,6 +6,17 @@ import state.State;
 import state.StateConstructor;
 import state.StateList;
 
+// 1 - HP
+// Potter
+
+// 2 - ab
+// (ab)+
+
+// 3 - float
+// [0-9]*.[0-9]+
+
+// 4 - date
+// ([0-9][0-9]/([0-9][0-9]|[A-Z][a-z][a-z])/[0-9][0-9][0-9][0-9])|([0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9])|([0-9][0-9] [A-Z][a-z][a-z] [0-9][0-9][0-9][0-9])
 public class StateAccepter {
 	public static boolean evaluate(StateList automata, String input) {
 		System.out.println("Reading " + input);
