@@ -50,8 +50,8 @@ public class Driver {
 		/**************************************************
 		 * SELECT THE FILE
 		 *************************************************/
-		String toCheck = selectFile();
-//		String toCheck = "";
+//		String toCheck = selectFile();
+		String toCheck = TextFileReader.read(NoisyPhoneNumberGenerator.FILENAME);
 		
 		/**************************************************
 		 * GENERATE THE DFA
@@ -59,7 +59,8 @@ public class Driver {
 		
 		totalTimer.start();
 		
-		String regexInput = forCheckingNumI();
+//		String regexInput = forCheckingNumI();
+		String regexInput = PhoneNumberFilterer.PHONE_NUMBER_REGEX;
 		StateList finalList = StateConstructor.REtoDFA(regexInput);
 		try {
 			timer.start();
@@ -99,6 +100,10 @@ public class Driver {
 			 *************************************************/
 			timer.start();
 			int[][] acceptedSubstrings = StateAccepter.getAllAcceptingSubStrings(finalList, toCheck);
+			timer.stop();
+			
+			System.out.println("Substring Tester took " + timer.getFormattedTimeLapsed());
+			timer.reset();
 			if(acceptedSubstrings.length > 0) {			
 				System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
 				System.out.println();
@@ -123,10 +128,7 @@ public class Driver {
 			}else {
 				System.out.println("No accepted subsequences in string.");
 			}
-			timer.stop();
 			
-			System.out.println("Substring Tester took " + timer.getFormattedTimeLapsed());
-			timer.reset();
 		}
 		
 		totalTimer.stop();
@@ -136,9 +138,15 @@ public class Driver {
 		
 	}
 	
+
+	
+
 	public static void main(String[] args) {
-//		PhoneNumberFilterer.start();
-		start();
+		String myString = NoisyPhoneNumberGenerator.generate();
+		System.out.println("I will be working with the ff: \n" + myString);
+		System.out.println(myString);
+		PhoneNumberFilterer.start(myString);
+//		start();
 	}
 	
     /**

@@ -21,17 +21,24 @@ import state.StateConstructor;
 import state.StateList;
 
 public class PhoneNumberFilterer {
-	public static void start(){
-		String regexInput = "(\\+63( )?9[0-9][0-9][0-9]( )?[0-9][0-9][0-9][0-9][0-9][0-9])|(\\+63-?9[0-9][0-9][0-9]-?[0-9][0-9][0-9][0-9][0-9][0-9])";
+	public static String PHONE_NUMBER_REGEX = "(\\+?639[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])|"
+			+ "(09[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])";
+	public static void start(String toCheck){
+//		String regexInput = "(\\+63( )?9[0-9][0-9][0-9]( )?[0-9][0-9][0-9][0-9][0-9][0-9])"
+//						 + "|(09[0-9][0-9][0-9]( )?[0-9][0-9][0-9][0-9][0-9][0-9])"
+//						 + "|(\\+63-?9[0-9][0-9][0-9]-?[0-9][0-9][0-9][0-9][0-9][0-9])"
+//						 + "|(09[0-9][0-9][0-9]-?[0-9][0-9][0-9][0-9][0-9][0-9])";
 		
-//		String regexInput = "(\\+63( )?9[0-9][0-9][0-9]( )?[0-9][0-9][0-9][0-9][0-9][0-9])|(\\+63-?9[0-9][0-9][0-9]-?[0-9][0-9][0-9][0-9][0-9][0-9])|(\\+639[0-9][0-9]( )?[0-9][0-9][0-9][0-9][0-9][0-9][0-9])|(09[0-9][0-9][0-9]( )?[0-9][0-9][0-9][0-9][0-9][0-9])";
+		String regexInput = PHONE_NUMBER_REGEX;
 		StateList finalList = StateConstructor.REtoDFA(regexInput);
-		
-		
+
+		/**************************************************
+		 * GENERATE THE DFA
+		 *************************************************/
 		try {
 			String filename = generateVisualization(regexInput, finalList);
-			
 			JFrame frame = new JFrame();
+			
 			
 			ImageIcon icon = new ImageIcon(filename);
 			JLabel label = new JLabel(icon);
@@ -54,8 +61,6 @@ public class PhoneNumberFilterer {
 			System.out.println("Unable to generate visualization because of large size.");
 		}
 		
-//		String toCheck = selectFile();
-		String toCheck = selectFile("C:\\Users\\Winfred Villaluna\\Documents\\trialtext.txt");
 		if(finalList != null) {			
 			/**************************************************
 			 * TEST THE FILE
@@ -64,22 +69,26 @@ public class PhoneNumberFilterer {
 			if(acceptedSubstrings.length > 0) {			
 				System.out.println("\n\nLocation of strings accepted by regex " + regexInput);
 				System.out.println();
-				for(int i = 0; i < acceptedSubstrings.length; i++) {
-					int startingIndex = acceptedSubstrings[i][0];
-					int endingIndex = acceptedSubstrings[i][1];
+				if(toCheck.length() == 0) {
+					int startingIndex = acceptedSubstrings[0][0];
+					int endingIndex = acceptedSubstrings[0][1];
 					System.out.println(startingIndex + " to " + endingIndex);
-					System.out.println(toCheck.substring(0, startingIndex) 
-							+ "[" + toCheck.substring(startingIndex, endingIndex+1) + "]" 
-							+ toCheck.substring(endingIndex+1));
-					System.out.println();
+					System.out.println("Empty text file was accepted.");
+				}else {
+					for(int i = 0; i < acceptedSubstrings.length; i++) {
+						int startingIndex = acceptedSubstrings[i][0];
+						int endingIndex = acceptedSubstrings[i][1];
+						System.out.println(startingIndex + " to " + endingIndex);
+						System.out.println("[" + toCheck.substring(startingIndex, endingIndex+1) + "]");
+						System.out.println();
+					}	
 				}
+				System.out.println("Total found:" + acceptedSubstrings.length);
 				System.out.println("-- End of list --");
 			}else {
 				System.out.println("No accepted subsequences in string.");
 			}
 		}
-		
-		
 	}
 	
 	public static String selectFile() {
